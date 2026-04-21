@@ -1,0 +1,730 @@
+#!/usr/bin/env python3
+"""
+为 .codebuddy/figma/ 下的所有画布生成 figma_viewer.html
+在生成阶段解决所有样式兼容性问题，不依赖浏览器端修补
+"""
+import re, os, glob
+from html.parser import HTMLParser
+
+FIGMA_DIR = '.codebuddy/figma'
+ASSET_BASE = '/assets'
+
+# emoji 检测正则
+EMOJI_RE = re.compile(
+    "["
+    "\U0001F600-\U0001F64F"  # Emoticons
+    "\U0001F300-\U0001F5FF"  # Misc Symbols and Pictographs
+    "\U0001F680-\U0001F6FF"  # Transport and Map
+    "\U0001F1E0-\U0001F1FF"  # Flags
+    "\U00002702-\U000027B0"
+    "\U0001F900-\U0001F9FF"
+    "\U0001FA00-\U0001FA6F"
+    "\U0001FA70-\U0001FAFF"
+    "\U00002600-\U000026FF"
+    "\U0000FE00-\U0000FE0F"
+    "\U0000200D"
+    "\U0000231A-\U000023F3"
+    "\U0000203C-\U00003299"
+    "]+", re.UNICODE
+)
+
+def has_emoji(text):
+    return bool(EMOJI_RE.search(text))
+
+def fix_span_style(style_str, text_content):
+    """修正 span 的 background-clip:text 写法为标准 color"""
+    if 'background-clip' not in style_str:
+        return style_str
+    
+    # 提取 background 颜色
+    # 匹配 background: #xxx 或 background: rgba(...) 或 background: var(--xxx, fallback)
+    bg_color = 'black'
+    
+    var_match = re.search(r'background:\s*var\([^,]+,\s*(.+?)\)\s*(?:;|$)', style_str)
+    hex_match = re.search(r'background:\s*(#[0-9a-fA-F]{3,8})', style_str)
+    rgba_match = re.search(r'background:\s*(rgba?\([^)]+\))', style_str)
+    word_match = re.search(r'background:\s*(black|white|red|blue|green|transparent)', style_str)
+    
+    if var_match:
+        bg_color = var_match.group(1).strip()
+    elif hex_match:
+        bg_color = hex_match.group(1)
+    elif rgba_match:
+        bg_color = rgba_match.group(1)
+    elif word_match:
+        bg_color = word_match.group(1)
+    
+    is_emoji = has_emoji(text_content)
+    
+    # 移除 background-clip 相关属性
+    result = style_str
+    result = re.sub(r'background-clip:\s*text;?\s*', '', result)
+    result = re.sub(r'-webkit-background-clip:\s*text;?\s*', '', result)
+    result = re.sub(r'color:\s*transparent;?\s*', '', result)
+    
+    if is_emoji:
+        # emoji: 去掉 background，不设 color（让 emoji 显示原始彩色）
+        result = re.sub(r'background:\s*(?:#[0-9a-fA-F]{3,8}|rgba?\([^)]+\)|var\([^)]*\([^)]*\)[^)]*\)|var\([^)]+\)|black|white|red|blue|green);?\s*', '', result)
+    else:
+        # 普通文字: 把 background 替换为 color
+        result = re.sub(
+            r'background:\s*(?:#[0-9a-fA-F]{3,8}|rgba?\([^)]+\)|var\([^)]*\([^)]*\)[^)]*\)|var\([^)]+\)|black|white|red|blue|green);?\s*',
+            f'color: {bg_color}; ',
+            result
+        )
+    
+    # 给 font-family 追加 fallback
+    FONT_FALLBACKS = {
+        'OPPO Sans 4.0 SC': "'OPPO Sans 4.0 SC', 'PingFang SC', 'Noto Sans SC', sans-serif",
+        'HONOR Sans CN': "'HONOR Sans CN', 'PingFang SC', 'Noto Sans SC', sans-serif",
+        'SogouKeyboard2022': "'SogouKeyboard2022', 'PingFang SC', 'Noto Sans SC', sans-serif",
+        'Noto Sans SC': "'Noto Sans SC', 'PingFang SC', sans-serif",
+        'PingFang SC': "'PingFang SC', 'Noto Sans SC', sans-serif",
+        'Kanit': "'Kanit', sans-serif",
+    }
+    for original, fallback in FONT_FALLBACKS.items():
+        if f'font-family: {original}' in result:
+            result = result.replace(f'font-family: {original}', f'font-family: {fallback}')
+
+    return result.strip()
+
+
+class FigmaHTMLProcessor(HTMLParser):
+    """解析 Figma HTML，精确处理每个 span 的样式"""
+    
+    def __init__(self):
+        super().__init__()
+        self.output = []
+        self._in_span = False
+        self._span_style = ''
+        self._span_text = ''
+        self._span_attrs = []
+    
+    def handle_starttag(self, tag, attrs):
+        if tag == 'span':
+            style = dict(attrs).get('style', '')
+            if 'background-clip' in style:
+                self._in_span = True
+                self._span_style = style
+                self._span_attrs = attrs
+                self._span_text = ''
+                return
+        
+        attr_str = ''
+        for k, v in attrs:
+            if v is None:
+                attr_str += f' {k}'
+            else:
+                attr_str += f' {k}="{v}"'
+        self.output.append(f'<{tag}{attr_str}>')
+    
+    def handle_endtag(self, tag):
+        if tag == 'span' and self._in_span:
+            fixed_style = fix_span_style(self._span_style, self._span_text)
+            attr_str = ''
+            for k, v in self._span_attrs:
+                if k == 'style':
+                    v = fixed_style
+                if v is None:
+                    attr_str += f' {k}'
+                else:
+                    attr_str += f' {k}="{v}"'
+            self.output.append(f'<span{attr_str}>{self._span_text}</span>')
+            self._in_span = False
+            return
+        self.output.append(f'</{tag}>')
+    
+    def handle_data(self, data):
+        if self._in_span:
+            self._span_text += data
+        else:
+            self.output.append(data)
+    
+    def handle_entityref(self, name):
+        text = f'&{name};'
+        if self._in_span:
+            self._span_text += text
+        else:
+            self.output.append(text)
+    
+    def handle_charref(self, name):
+        text = f'&#{name};'
+        if self._in_span:
+            self._span_text += text
+        else:
+            self.output.append(text)
+    
+    def get_result(self):
+        return ''.join(self.output)
+
+
+def process_figma_html(html, canvas_id):
+    """处理完整的 figma.html"""
+    # 1. 修正资源路径
+    fixed = re.sub(r"file:///[^'\"]*?/assets/", f'{ASSET_BASE}/', html)
+    fixed = re.sub(r"http://localhost:\d+/assets/", f'{ASSET_BASE}/', fixed)
+    fixed = re.sub(r"http://localhost:\d+/", f'{ASSET_BASE}/../', fixed)
+    
+    # 2. 用 HTML parser 精确处理每个 span
+    processor = FigmaHTMLProcessor()
+    processor.feed(fixed)
+    return processor.get_result()
+
+
+def extract_size(html):
+    """从 HTML 中提取画布尺寸"""
+    m = re.search(r'width:\s*([\d.]+)px.*?height:\s*([\d.]+)px', html)
+    if m:
+        return int(float(m.group(1))), int(float(m.group(2)))
+    return 1080, 2400
+
+
+def build_viewer(canvas_id):
+    """为指定画布生成 figma_viewer.html"""
+    figma_html_path = os.path.join(FIGMA_DIR, canvas_id, 'figma.html')
+    viewer_path = os.path.join(FIGMA_DIR, canvas_id, 'figma_viewer.html')
+    
+    if not os.path.exists(figma_html_path):
+        print(f'  SKIP {canvas_id}: figma.html not found')
+        return False
+    
+    with open(figma_html_path, 'r', encoding='utf-8') as f:
+        raw_html = f.read()
+    
+    w, h = extract_size(raw_html)
+    processed = process_figma_html(raw_html, canvas_id)
+    
+    viewer_html = f'''<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+@font-face{{font-family:'OPPO Sans 4.0 SC';src:local('OPPO Sans 4.0 SC'),local('OPPO Sans'),local('OPPOSans');font-display:swap}}
+@font-face{{font-family:'HONOR Sans CN';src:local('HONOR Sans CN'),local('HONOR Sans'),local('HONORSansCN');font-display:swap}}
+@font-face{{font-family:'SogouKeyboard2022';src:local('SogouKeyboard2022'),local('Sogou Keyboard 2022');font-display:swap}}
+*{{margin:0;padding:0}}
+html,body{{width:100%;height:100%;overflow:hidden;background:white;
+  font-family:'PingFang SC','Noto Sans SC','Helvetica Neue',Arial,sans-serif}}
+#root{{position:absolute;top:0;left:0;width:{w}px;height:{h}px;transform-origin:top left}}
+img{{display:inline;max-width:none}}
+</style></head><body>
+<div id="root">{processed}</div>
+<div id="ann" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999"></div>
+<script>
+var RW={w},RH={h},curSel=null;
+var curScaleX=1,curScaleY=1;
+var curWs=100,curHs=100,curFs=100;
+var curOrigBaseScale=1;
+var curDeviceW=0,curDeviceH=0;
+var curPxRatio=3;
+var originals=null;
+
+function saveOriginals(){{
+  originals=[];
+  document.querySelectorAll('#root [style]').forEach(function(el){{
+    originals.push({{el:el,origStyle:el.getAttribute('style')||''}});
+  }});
+}}
+
+window.addEventListener("message",function(e){{
+  if(!e.data)return;
+  if(e.data.type==="figma-scale"){{
+    if(!originals) saveOriginals();
+    curScaleX=e.data.scaleX||e.data.scale||1;
+    curScaleY=e.data.scaleY||e.data.scale||1;
+    if(e.data.ws!==undefined){{ curWs=e.data.ws;curHs=e.data.hs;curFs=e.data.fs; }}
+    if(e.data.deviceW!==undefined){{ curDeviceW=e.data.deviceW;curDeviceH=e.data.deviceH; }}
+    if(e.data.pxRatio!==undefined){{ curPxRatio=e.data.pxRatio; }}
+    if(e.data.baseScale!==undefined){{ curOrigBaseScale=e.data.baseScale; }}
+    applyAdaptiveScale();
+    if(curSel)setTimeout(function(){{drawAnn(curSel);}},50);
+  }}
+  if(e.data.type==="figma-parse")parseAndSend();
+  if(e.data.type==="figma-highlight"){{clearSel();if(e.data.idx>=0)selByIdx(e.data.idx);}}
+  // 接收外部注入的自适应布局代码（支持 HTML+CSS 混合）
+  if(e.data.type==="figma-css-inject"){{
+    injectLayoutCode(e.data.selector,e.data.styleCSS,e.data.inlineCSS,e.data.htmlContent);
+  }}
+  if(e.data.type==="figma-css-clear"){{
+    clearInjectedCSS();
+  }}
+}});
+
+var injectedStyleEl=null;
+var injectedInlineBackups=[];
+var injectedHTMLBackup=null; // {{el, origHTML}}
+var injectedHasFlex=false; // 是否注入了 flex/grid 布局
+var injectedPropsMap=new Map(); // el → Set of user-written property names
+
+function injectLayoutCode(selector,styleCSS,inlineCSS,htmlContent){{
+  clearInjectedCSS();
+
+  // 1. 注入 <style> 标签
+  if(styleCSS){{
+    injectedStyleEl=document.createElement('style');
+    injectedStyleEl.id='__injected_layout_style';
+    injectedStyleEl.textContent=styleCSS;
+    document.head.appendChild(injectedStyleEl);
+  }}
+
+  var els=selector?document.querySelectorAll(selector):[];
+  if(!els.length){{ originals=null;saveOriginals();applyAdaptiveScale();return; }}
+
+  // 2. 先替换 HTML 内容（如有）
+  if(htmlContent){{
+    var el=els[0];
+    injectedHTMLBackup={{el:el,origHTML:el.innerHTML}};
+    el.innerHTML=htmlContent;
+  }}
+
+  // 3. 注入内联 CSS 属性
+  if(inlineCSS){{
+    var props={{}};
+    inlineCSS.split(';').forEach(function(line){{
+      var p=line.indexOf(':');
+      if(p<0) return;
+      var k=line.substring(0,p).trim(), v=line.substring(p+1).trim();
+      if(k&&v) props[k]=v;
+    }});
+    var hasFlex=props['display']&&(props['display'].indexOf('flex')>=0);
+    var hasGrid=props['display']&&(props['display'].indexOf('grid')>=0);
+    if(hasFlex||hasGrid) injectedHasFlex=true;
+
+    els.forEach(function(el){{
+      // 智能深入
+      var flexTarget=el;
+      if(hasFlex||hasGrid){{
+        if(el.children.length===1 && el.children[0].children.length>1){{
+          injectedInlineBackups.push({{el:el,orig:el.getAttribute('style')||''}});
+          // 中间层：只改 position（flex 必需），记录冲突属性
+          el.style.position='relative';
+          el.style.left='auto';
+          el.style.top='auto';
+          var midProps=new Set(['position','left','top']);
+          injectedPropsMap.set(el,midProps);
+          flexTarget=el.children[0];
+        }}
+      }}
+
+      injectedInlineBackups.push({{el:flexTarget,orig:flexTarget.getAttribute('style')||''}});
+      // 只设置用户写的属性，记录属性名
+      var userProps=new Set();
+      for(var k in props){{
+        flexTarget.style.setProperty(k,props[k]);
+        userProps.add(k);
+      }}
+
+      if(hasFlex||hasGrid){{
+        injectedHasFlex=true;
+        flexTarget.style.position='relative';
+        flexTarget.style.left='auto';
+        flexTarget.style.top='auto';
+        userProps.add('position');userProps.add('left');userProps.add('top');
+        var root=document.getElementById('root');
+        root.style.overflow='visible';
+        // 子元素：只清除 position/left/top（flex排列必需）
+        for(var i=0;i<flexTarget.children.length;i++){{
+          var ch=flexTarget.children[i];
+          injectedInlineBackups.push({{el:ch,orig:ch.getAttribute('style')||''}});
+          ch.style.position='relative';
+          ch.style.left='auto';
+          ch.style.top='auto';
+          injectedPropsMap.set(ch,new Set(['position','left','top']));
+        }}
+      }}
+      injectedPropsMap.set(flexTarget,userProps);
+    }});
+  }}
+
+  // 重新保存 originals（注入后作为新基准），重新应用缩放
+  originals=null;
+  saveOriginals();
+  applyAdaptiveScale();
+}}
+
+function clearInjectedCSS(){{
+  // 还原 <style> 标签
+  if(injectedStyleEl){{
+    injectedStyleEl.remove();
+    injectedStyleEl=null;
+  }}
+  // 还原内联样式
+  injectedInlineBackups.forEach(function(b){{
+    b.el.setAttribute('style',b.orig);
+  }});
+  injectedInlineBackups=[];
+  injectedPropsMap=new Map();
+  // 恢复 #root 和 body 的状态
+  if(injectedHasFlex){{
+    var root=document.getElementById('root');
+    root.style.overflow='';
+    root.style.height='';
+    root.style.width='';
+    root.style.transform='';
+    root.style.minHeight='';
+    document.body.style.overflow='';
+  }}
+  injectedHasFlex=false;
+  // 还原 HTML 内容
+  if(injectedHTMLBackup){{
+    injectedHTMLBackup.el.innerHTML=injectedHTMLBackup.origHTML;
+    injectedHTMLBackup=null;
+  }}
+  originals=null;
+  saveOriginals();
+  applyAdaptiveScale();
+}}
+
+// 检查某属性是否被输入框代码覆盖（优先级最高，不可被全局缩放修改）
+function isUserOverridden(el,prop){{
+  var s=injectedPropsMap.get(el);
+  return s&&s.has(prop);
+}}
+
+// ===== 自适应缩放（核心） =====
+// 优先级：输入框代码 > Figma原始样式 > 全局缩放规则
+// 无冲突时三者叠加；有冲突时按优先级覆盖
+
+function applyAdaptiveScale(){{
+  var scX=curScaleX, scY=curScaleY;
+  var baseScale=Math.min(scX,scY);
+  var wRatio=scX/baseScale, hRatio=scY/baseScale;
+
+  restoreOriginals();
+  var r=document.getElementById("root");
+
+  var hasFlexLayout=injectedHasFlex;
+
+  if(hasFlexLayout && curDeviceW>0){{
+    // ===== flex 模式：统一 dp 坐标系 =====
+    // dp = px / pxRatio，全程 dp 单位
+    // viewScale 随宽度变化（全局缩放规则共同作用）
+    // 个体元素以中心点缩放
+    var pr=curPxRatio;
+    
+    // viewScale = min(scX,scY) * pxRatio（随宽度/高度滑块变化）
+    var viewScale=baseScale*pr;
+    
+    // #root = 设备 dp 宽
+    r.style.width=curDeviceW+'px';
+    r.style.height='auto';
+    r.style.overflow='visible';
+    r.style.transform='scale('+viewScale+')';
+    document.body.style.overflow='visible';
+
+    // 所有 Figma 元素 px → dp 换算
+    document.querySelectorAll('#root [style]').forEach(function(el){{
+      var s=el.getAttribute('style')||'';
+      var isAtomic=checkAtomic(el);
+      
+      if(isAtomic){{
+        // 个体元素：px→dp（基准尺寸），自身尺寸不变（保持等比不变形）
+        // viewScale 整体缩放已包含缩小效果，无需额外 scale
+        var origW=0,origH=0;
+        if(!isUserOverridden(el,'width')){{
+          var wm=s.match(/width:\\s*([\\d.]+)px/);
+          if(wm){{ origW=+wm[1]; el.style.width=Math.round(origW/pr)+'px'; }}
+        }}
+        if(!isUserOverridden(el,'height')){{
+          var hm=s.match(/height:\\s*([\\d.]+)px/);
+          if(hm){{ origH=+hm[1]; el.style.height=Math.round(origH/pr)+'px'; }}
+        }}
+        if(!isUserOverridden(el,'font-size')){{
+          var fm=s.match(/font-size:\\s*([\\d.]+)px/);
+          if(fm) el.style.fontSize=Math.round(+fm[1]/pr)+'px';
+        }}
+        if(!isUserOverridden(el,'border-radius')){{
+          var br=s.match(/border-radius:\\s*([\\d.]+)px/);
+          if(br) el.style.borderRadius=Math.round(+br[1]/pr)+'px';
+        }}
+        if(!isUserOverridden(el,'left')){{
+          var lm=s.match(/left:\\s*([\\d.]+)px/);
+          if(lm) el.style.left=Math.round(+lm[1]/pr)+'px';
+        }}
+        if(!isUserOverridden(el,'top')){{
+          var tm=s.match(/top:\\s*([\\d.]+)px/);
+          if(tm) el.style.top=Math.round(+tm[1]/pr)+'px';
+        }}
+      }} else {{
+        // 容器元素：px→dp
+        if(!isUserOverridden(el,'width')){{
+          var wm=s.match(/width:\\s*([\\d.]+)px/);
+          if(wm) el.style.width=Math.round(+wm[1]/pr)+'px';
+        }}
+        if(!isUserOverridden(el,'height')){{
+          var hm=s.match(/height:\\s*([\\d.]+)px/);
+          if(hm) el.style.height=Math.round(+hm[1]/pr)+'px';
+        }}
+        if(!isUserOverridden(el,'left')){{
+          var lm=s.match(/left:\\s*([\\d.]+)px/);
+          if(lm) el.style.left=Math.round(+lm[1]/pr)+'px';
+        }}
+        if(!isUserOverridden(el,'top')){{
+          var tm=s.match(/top:\\s*([\\d.]+)px/);
+          if(tm) el.style.top=Math.round(+tm[1]/pr)+'px';
+        }}
+      }}
+    }});
+
+    // 用户输入框 CSS 中的 px 值 ÷ pxRatio → dp
+    injectedPropsMap.forEach(function(props,el){{
+      props.forEach(function(prop){{
+        if(prop==='position'||prop==='display'||prop==='flex-wrap'||prop==='align-items'
+          ||prop==='justify-content'||prop==='align-content'||prop==='flex-direction'
+          ||prop==='flex-shrink'||prop==='background'||prop==='color'||prop==='overflow') return;
+        var val=el.style.getPropertyValue(prop);
+        if(val){{
+          var m=val.match(/^([\\d.]+)px$/);
+          if(m){{
+            el.style.setProperty(prop,Math.round(+m[1]/pr)+'px');
+          }}
+        }}
+      }});
+    }});
+
+    // 注入链路上的中间层：宽度强制=设备dp
+    injectedPropsMap.forEach(function(props,el){{
+      if(!props.has('position')) return;
+      var compDisp=(el.style.display||'');
+      var isFlex=compDisp.indexOf('flex')>=0||compDisp.indexOf('grid')>=0;
+      if(!isFlex){{
+        el.style.width=curDeviceW+'px';
+        el.style.height='auto';
+      }}
+    }});
+    
+    return;
+  }}
+
+  // ===== 常规模式（无输入框代码或无 flex） =====
+  // 个体元素：位置跟随容器移动，自身尺寸不变（保持等比不变形）
+  // baseScale 整体缩放已包含缩小效果，无需额外 scale
+  if(Math.abs(wRatio-1)<0.001 && Math.abs(hRatio-1)<0.001){{
+    r.style.width=RW+'px';r.style.height=RH+'px';
+    r.style.transform='scale('+baseScale+')';
+    return;
+  }}
+
+  var newW=Math.round(RW*wRatio), newH=Math.round(RH*hRatio);
+  r.style.width=newW+'px';
+  r.style.height=newH+'px';
+  r.style.transform='scale('+baseScale+')';
+
+  // 遍历所有元素重算（全局缩放规则，输入框代码覆盖的属性跳过）
+  document.querySelectorAll('#root [style]').forEach(function(el){{
+    var s=el.getAttribute('style')||'';
+    var isAtomic=checkAtomic(el);
+
+    if(isAtomic){{
+      // 个体元素：位置跟随，自身尺寸不变（等比不变形）
+      if(!isUserOverridden(el,'left')){{
+        var lm=s.match(/left:\\s*([\\d.]+)px/);
+        if(lm) el.style.left=Math.round(+lm[1]*wRatio)+'px';
+      }}
+      if(!isUserOverridden(el,'top')){{
+        var tm=s.match(/top:\\s*([\\d.]+)px/);
+        if(tm) el.style.top=Math.round(+tm[1]*hRatio)+'px';
+      }}
+    }} else {{
+      // 容器元素：宽高跟随 wRatio/hRatio 变化
+      if(!isUserOverridden(el,'left')){{
+        var lm=s.match(/left:\\s*([\\d.]+)px/);
+        if(lm) el.style.left=Math.round(+lm[1]*wRatio)+'px';
+      }}
+      if(!isUserOverridden(el,'top')){{
+        var tm=s.match(/top:\\s*([\\d.]+)px/);
+        if(tm) el.style.top=Math.round(+tm[1]*hRatio)+'px';
+      }}
+      if(!isUserOverridden(el,'width')){{
+        var wm=s.match(/width:\\s*([\\d.]+)px/);
+        if(wm) el.style.width=Math.round(+wm[1]*wRatio)+'px';
+      }}
+      if(!isUserOverridden(el,'height')){{
+        var hm=s.match(/height:\\s*([\\d.]+)px/);
+        if(hm) el.style.height=Math.round(+hm[1]*hRatio)+'px';
+      }}
+      // 清除 overflow:hidden 防止裁切拉伸后的子元素
+      if(s.indexOf('overflow')>=0) el.style.overflow='visible';
+    }}
+  }});
+}}
+
+function restoreOriginals(){{
+  if(!originals) return;
+  originals.forEach(function(o){{
+    o.el.setAttribute('style',o.origStyle);
+  }});
+}}
+
+// 判断元素是否是"个体元素"（应保持自身宽高比的原子单元）
+function checkAtomic(el){{
+  var tag=el.tagName.toLowerCase();
+  // 自身是 img / svg → 个体
+  if(tag==='img'||tag==='svg') return true;
+  // 自身是 svg-wrapper
+  if(el.hasAttribute('data-svg-wrapper')) return true;
+  // 有非透明背景色的纯色块/大面积背景 → 容器（跟随容器宽高变化）
+  var s0=el.getAttribute('style')||'';
+  if((/background:\s*(?!rgba\([^)]*,\s*0\))(?!none)(?!transparent)/).test(s0)){{
+    // 无子元素的纯色块 → 容器
+    if(el.children.length===0 && !el.textContent.trim()) return false;
+    // 有多个子元素 → 容器
+    if(el.children.length>1) return false;
+  }}
+  // 含直接文本节点
+  for(var j=0;j<el.childNodes.length;j++){{
+    if(el.childNodes[j].nodeType===3&&el.childNodes[j].textContent.trim()) return true;
+  }}
+  // 统计直接子级中的个体内容数量
+  var atomicKids=el.querySelectorAll(':scope>span,:scope>img,:scope>[data-svg-wrapper]');
+  // 只有 1 个个体子级 → 此容器整体视为个体（单图标/单文字容器）
+  if(atomicKids.length===1) return true;
+  // 多个个体子级 → 这是布局容器，让子级各自作为个体
+  if(atomicKids.length>1) return false;
+  // 含 span（文字）
+  if(el.querySelector(':scope>span')) return true;
+  // 小型 icon 容器（<500px，所有子级都是个体内容）
+  var s=el.getAttribute('style')||'';
+  var wm=s.match(/width:\\s*([\\d.]+)px/),hm=s.match(/height:\\s*([\\d.]+)px/);
+  var ew=wm?+wm[1]:0,eh=hm?+hm[1]:0;
+  if(ew>0 && ew<500 && eh>0 && eh<500){{
+    var kids=el.children;
+    if(kids.length>0){{
+      var allAtomic=true;
+      for(var c=0;c<kids.length;c++){{
+        var cs=kids[c].getAttribute('style')||'';
+        var ok=kids[c].hasAttribute('data-svg-wrapper')
+          ||!!kids[c].querySelector(':scope>img')
+          ||!!kids[c].querySelector(':scope>span')
+          ||!!kids[c].querySelector(':scope>[data-svg-wrapper]')
+          ||(/background:\\s*(?!rgba\\([^)]*,\\s*0\\))/).test(cs)
+          ||(cs.indexOf('width')>=0 && kids[c].children.length===0 && !kids[c].textContent.trim());
+        if(!ok){{allAtomic=false;break;}}
+      }}
+      if(allAtomic) return true;
+    }}
+  }}
+  return false;
+}}
+
+function parseAndSend(){{
+  var els=[], idx=0;
+  document.querySelectorAll('#root [style]').forEach(function(el){{
+    var s=el.getAttribute('style')||'';
+    var wm=s.match(/width:\\s*([\\d.]+)px/),hm=s.match(/height:\\s*([\\d.]+)px/);
+    // 也标记没有 width/height 但含可见内容的 div
+    var hasSpan=!!el.querySelector(':scope>span');
+    var hasImg=!!el.querySelector(':scope>img');
+    var hasSvgWrap=!!el.querySelector(':scope>[data-svg-wrapper]');
+    if(!wm&&!hm&&!hasSpan&&!hasImg&&!hasSvgWrap)return;
+    var txt='';if(el.childNodes.length===1&&el.childNodes[0].nodeType===3)txt=el.textContent.trim();
+    if(!txt){{var sp=el.querySelector(':scope>span');if(sp)txt=sp.textContent.trim();}}
+    var lm=s.match(/left:\\s*([\\d.]+)px/),tm=s.match(/top:\\s*([\\d.]+)px/);
+    var fs=s.match(/font-size:\\s*([\\d.]+)px/),br=s.match(/border-radius:\\s*([\\d.]+)px/);
+    var op=s.match(/opacity:\\s*([\\d.]+)/),bg=s.match(/background:\\s*([^;]+)/);
+    var i=idx++;
+    el.dataset.eidx=i;
+    els.push({{idx:i,tag:el.tagName.toLowerCase(),text:txt||'',
+      w:wm?+wm[1]:0,h:hm?+hm[1]:0,x:lm?+lm[1]:0,y:tm?+tm[1]:0,
+      fontSize:fs?+fs[1]:0,borderRadius:br?+br[1]:0,opacity:op?+op[1]:1,bg:bg?bg[1].trim():''}});
+  }});
+  parent.postMessage({{type:'figma-elements',elements:els}},'*');
+}}
+
+// 画布内点击
+document.getElementById('root').addEventListener('click',function(ev){{
+  ev.stopPropagation();
+  var t=ev.target;
+  while(t&&t.id!=='root'){{
+    if(t.dataset&&t.dataset.eidx!==undefined){{
+      clearSel();selByIdx(+t.dataset.eidx);
+      parent.postMessage({{type:'figma-click',idx:+t.dataset.eidx}},'*');
+      return;
+    }}
+    t=t.parentElement;
+  }}
+}});
+document.addEventListener('click',function(ev){{
+  if(!document.getElementById('root').contains(ev.target)){{clearSel();parent.postMessage({{type:'figma-click',idx:-1}},'*');}}
+}});
+
+function clearSel(){{
+  document.querySelectorAll('.fg-sel').forEach(function(e){{e.classList.remove('fg-sel');}});
+  document.getElementById('ann').innerHTML='';curSel=null;
+}}
+function selByIdx(idx){{
+  var el=document.querySelector('[data-eidx="'+idx+'"]');
+  if(!el)return;el.classList.add('fg-sel');curSel=el;drawAnn(el);
+}}
+
+function drawAnn(el){{
+  var a=document.getElementById('ann');a.innerHTML='';
+  var s=el.getAttribute('style')||'';
+  var ew=+(s.match(/width:\\s*([\\d.]+)px/)||[0,el.offsetWidth])[1];
+  var eh=+(s.match(/height:\\s*([\\d.]+)px/)||[0,el.offsetHeight])[1];
+  var ex=+(s.match(/left:\\s*([\\d.]+)px/)||[0,0])[1];
+  var ey=+(s.match(/top:\\s*([\\d.]+)px/)||[0,0])[1];
+
+  var rect=el.getBoundingClientRect(),rr=document.getElementById('root').getBoundingClientRect();
+  var ax=rect.left-rr.left,ay=rect.top-rr.top,aw_=rect.width,ah_=rect.height;
+
+  // 尺寸标注（蓝色）
+  a.innerHTML+=dimL(ax,ay+ah_+3,aw_,true,Math.round(ew)+'px');
+  a.innerHTML+=dimL(ax+aw_+3,ay,ah_,false,Math.round(eh)+'px');
+
+  // 边距标注（橙色虚线）
+  var ps=el.parentElement?el.parentElement.getAttribute('style')||'':'';
+  var pw=+(ps.match(/width:\\s*([\\d.]+)px/)||[0,RW])[1];
+  var ph=+(ps.match(/height:\\s*([\\d.]+)px/)||[0,RH])[1];
+  var sx=rr.width/RW;
+
+  if(ex>0) a.innerHTML+=mrgL(ax-ex*sx,ay+ah_/2,ex*sx,true,Math.round(ex)+'','L');
+  if(ey>0) a.innerHTML+=mrgL(ax+aw_/2,ay-ey*sx,ey*sx,false,Math.round(ey)+'','T');
+  var rg=pw-ex-ew;
+  if(rg>1&&rg<pw) a.innerHTML+=mrgL(ax+aw_,ay+ah_/2,rg*sx,true,Math.round(rg)+'','R');
+  var bg_=ph-ey-eh;
+  if(bg_>1&&bg_<ph) a.innerHTML+=mrgL(ax+aw_/2,ay+ah_,bg_*sx,false,Math.round(bg_)+'','B');
+}}
+
+function dimL(x,y,len,h,lbl){{
+  var c='#4F6EF7';
+  if(h)return '<div style="position:absolute;left:'+x+'px;top:'+y+'px;width:'+len+'px;height:0;border-top:1px solid '+c+';pointer-events:none;z-index:10000"><div style="position:absolute;left:0;top:-3px;width:1px;height:6px;background:'+c+'"></div><div style="position:absolute;right:0;top:-3px;width:1px;height:6px;background:'+c+'"></div><div style="position:absolute;left:50%;top:3px;transform:translateX(-50%);font-size:9px;color:'+c+';font-weight:700;white-space:nowrap;background:rgba(255,255,255,.9);padding:0 3px;border-radius:2px;line-height:1.2">'+lbl+'</div></div>';
+  return '<div style="position:absolute;left:'+x+'px;top:'+y+'px;width:0;height:'+len+'px;border-left:1px solid '+c+';pointer-events:none;z-index:10000"><div style="position:absolute;left:-3px;top:0;width:6px;height:1px;background:'+c+'"></div><div style="position:absolute;left:-3px;bottom:0;width:6px;height:1px;background:'+c+'"></div><div style="position:absolute;top:50%;left:5px;transform:translateY(-50%);font-size:9px;color:'+c+';font-weight:700;white-space:nowrap;background:rgba(255,255,255,.9);padding:0 3px;border-radius:2px;line-height:1.2">'+lbl+'</div></div>';
+}}
+
+function mrgL(x,y,len,h,lbl,dir){{
+  var c='#EA580C';
+  if(h)return '<div style="position:absolute;left:'+x+'px;top:'+y+'px;width:'+len+'px;height:0;border-top:1px dashed '+c+';pointer-events:none;z-index:10000"><div style="position:absolute;left:50%;'+(dir==='L'?'top:-13px':'top:3px')+';transform:translateX(-50%);font-size:8px;color:'+c+';font-weight:700;white-space:nowrap;background:rgba(255,255,255,.9);padding:0 3px;border-radius:2px;line-height:1.2">'+lbl+'</div></div>';
+  return '<div style="position:absolute;left:'+x+'px;top:'+y+'px;width:0;height:'+len+'px;border-left:1px dashed '+c+';pointer-events:none;z-index:10000"><div style="position:absolute;'+(dir==='T'?'left:-30px;top:50%':'left:5px;top:50%')+';transform:translateY(-50%);font-size:8px;color:'+c+';font-weight:700;white-space:nowrap;background:rgba(255,255,255,.9);padding:0 3px;border-radius:2px;line-height:1.2">'+lbl+'</div></div>';
+}}
+</script>
+<style>
+.fg-sel{{outline:2px solid #4F6EF7!important;outline-offset:-1px;position:relative;z-index:9998!important;cursor:pointer}}
+.fg-sel::after{{content:'';position:absolute;inset:0;background:rgba(79,110,247,.05);pointer-events:none}}
+#root [data-eidx]{{cursor:pointer}}
+#root [data-eidx]:hover{{outline:1px dashed rgba(79,110,247,.4);outline-offset:-1px}}
+</style>
+</body></html>'''
+    
+    with open(viewer_path, 'w', encoding='utf-8') as f:
+        f.write(viewer_html)
+    
+    print(f'  OK {canvas_id}: {w}x{h}')
+    return True
+
+
+def main():
+    print('Building figma viewers...')
+    dirs = sorted(glob.glob(os.path.join(FIGMA_DIR, '*')))
+    count = 0
+    for d in dirs:
+        if os.path.isdir(d):
+            canvas_id = os.path.basename(d)
+            if build_viewer(canvas_id):
+                count += 1
+    print(f'Done: {count} viewers built')
+
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:white}
+#root{position:absolute;top:0;left:0;transform-origin:top left}
+div,span{box-sizing:content-box}
+img{display:inline;max-width:none}
+</style></head><body>
+<div id="root"></div>
+<script>
+const id = new URLSearchParams(location.search).get('id');
+if (id) {
+  fetch(`.codebuddy/figma/${id}/figma.html`)
+    .then(r => r.text())
+    .then(html => {
+      // 修正资源路径为相对路径
+      let fixed = html.replace(/file:\/\/\/[^'"]*?\/assets\//g, 'assets/');
+      fixed = fixed.replace(/http:\/\/localhost:\d+\/assets\//g, 'assets/');
+
+      const root = document.getElementById('root');
+      const m = fixed.match(/width:\s*(\d+)px.*?height:\s*(\d+)px/);
+      if (m) { root.style.width = m[1]+'px'; root.style.height = m[2]+'px'; }
+      root.innerHTML = fixed;
+
+      // 修正 background-clip:text 样式
+      root.querySelectorAll('span').forEach(span => {
+        const s = span.getAttribute('style')||'';
+        if (!s.includes('background-clip')) return;
+
+        let color = 'black';
+        const vm = s.match(/background:\s*var\([^,]+,\s*([^)]+)\)/);
+        const hm = s.match(/background:\s*(#[0-9a-fA-F]{3,8})/);
+        const rm = s.match(/background:\s*(rgba?\([^)]+\))/);
+        if (vm) color = vm[1].trim();
+        else if (hm) color = hm[1];
+        else if (rm) color = rm[1];
+        else if (s.includes('background: white')) color = 'white';
+
+        const hasEmoji = /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{2600}-\u{27BF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FAFF}\u{200D}\u{FE0F}]/u.test(span.textContent);
+
+        span.style.backgroundClip = 'unset';
+        span.style.webkitBackgroundClip = 'unset';
+        span.style.webkitTextFillColor = 'unset';
+        span.style.background = 'none';
+        span.style.color = hasEmoji ? 'initial' : color;
+      });
+    });
+}
+window.addEventListener('message', function(e) {
+  if (e.data && e.data.type === 'figma-scale') {
+    const root = document.getElementById('root');
+    if (e.data.scaleX !== undefined && e.data.scaleY !== undefined) {
+      root.style.transform = 'scale(' + e.data.scaleX + ',' + e.data.scaleY + ')';
+    } else if (e.data.scale !== undefined) {
+      root.style.transform = 'scale(' + e.data.scale + ')';
+    }
+  }
+});
+</script>
+</body></html>
