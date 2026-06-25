@@ -332,8 +332,6 @@
 
   /* Table */
   .brand-body { overflow-x: auto; }
-  .bezel-group-th { text-align:center !important; border-left:1px solid var(--border); border-right:1px solid var(--border); background:#fff8e1 !important; }
-  .bezel-group-th .src-tag { vertical-align:middle; margin-left:4px; text-transform:none; letter-spacing:0; }
   .bezel-cell-tag { display:inline-block; margin-left:4px; font-size:10px; padding:0 5px; border-radius:4px; vertical-align:middle; }
   table {
     width: 100%;
@@ -486,9 +484,9 @@
   .src-measured { background:#e6f4ea; color:#137333; }
   .src-missing { background:#f0f0f5; color:#aeaeb2; }
   .src-todo { background:#fdecea; color:#c0392b; }
-  /* v1.8: 边框分组表头里的“估算”小标签——浅灰底浅色字、小圆角，置于列名下方 */
-  .bezel-group-th { background:#fafafa !important; }
-  .bezel-group-th .bezel-est-badge {
+  /* v1.8: 每个边框列名下方的“估算”小标签——浅灰底浅色字、小圆角 */
+  thead th { vertical-align: top; }
+  .bezel-est-badge {
     display:inline-block; margin-top:4px; padding:1px 8px; border-radius:10px;
     background:#eee; color:#999; font-size:10px; font-weight:400;
     text-transform:none; letter-spacing:0;
@@ -1248,22 +1246,19 @@ function renderContent() {
     html += `<div class="brand-body"><table>`;
     html += `<thead>
       <tr>
-        <th class="sortable${sortKey==='name'?' sort-active':''}" rowspan="2" data-sortkey="name">\u8BBE\u5907<span class="sort-arrow">${sortKey==='name'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
-        <th class="sortable${sortKey==='year'?' sort-active':''}" rowspan="2" data-sortkey="year">\u5E74\u4EFD<span class="sort-arrow">${sortKey==='year'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
-        ${currentCat==="foldable"?'<th rowspan="2">\u7C7B\u578B</th>':""}
-        <th class="sortable${sortKey==='screen'?' sort-active':''}" rowspan="2" data-sortkey="screen">${currentCat==="foldable"?"\u5185\u5C4F\u5C3A\u5BF8":"\u5C4F\u5E55\u5C3A\u5BF8"}<span class="sort-arrow">${sortKey==='screen'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
-        <th rowspan="2">\u5206\u8FA8\u7387</th>
-        <th class="sortable${sortKey==='ppi'?' sort-active':''}" rowspan="2" data-sortkey="ppi">PPI<span class="sort-arrow">${sortKey==='ppi'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
-        <th class="sortable${sortKey==='w'?' sort-active':''}" rowspan="2" data-sortkey="w">${currentCat==="foldable"?"\u5C55\u5F00\u5BBD (mm)":"\u673A\u8EAB\u5BBD (mm)"}<span class="sort-arrow">${sortKey==='w'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
-        <th class="sortable${sortKey==='h'?' sort-active':''}" rowspan="2" data-sortkey="h">${currentCat==="foldable"?"\u5C55\u5F00\u9AD8 (mm)":"\u673A\u8EAB\u9AD8 (mm)"}<span class="sort-arrow">${sortKey==='h'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
-        <th class="bezel-group-th" colspan="4">\u8FB9\u6846\uFF08\u9ED1\u8FB9\uFF09<br><span class="bezel-est-badge">\u4F30\u7B97</span></th>
-        <th class="sortable${sortKey==='weight'?' sort-active':''}" rowspan="2" data-sortkey="weight">\u91CD\u91CF (g)<span class="sort-arrow">${sortKey==='weight'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
-      </tr>
-      <tr>
-        <th class="sortable${sortKey==='bt'?' sort-active':''}" data-sortkey="bt">\u4E0A\u8FB9\u6846 (mm)<span class="sort-arrow">${sortKey==='bt'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
-        <th class="sortable${sortKey==='bb'?' sort-active':''}" data-sortkey="bb">\u4E0B\u8FB9\u6846 (mm)<span class="sort-arrow">${sortKey==='bb'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
-        <th class="sortable${sortKey==='bl'?' sort-active':''}" data-sortkey="bl">\u5DE6\u8FB9\u6846 (mm)<span class="sort-arrow">${sortKey==='bl'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
-        <th class="sortable${sortKey==='br'?' sort-active':''}" data-sortkey="br">\u53F3\u8FB9\u6846 (mm)<span class="sort-arrow">${sortKey==='br'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
+        <th class="sortable${sortKey==='name'?' sort-active':''}" data-sortkey="name">\u8BBE\u5907<span class="sort-arrow">${sortKey==='name'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
+        <th class="sortable${sortKey==='year'?' sort-active':''}" data-sortkey="year">\u5E74\u4EFD<span class="sort-arrow">${sortKey==='year'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
+        ${currentCat==="foldable"?'<th>\u7C7B\u578B</th>':""}
+        <th class="sortable${sortKey==='screen'?' sort-active':''}" data-sortkey="screen">${currentCat==="foldable"?"\u5185\u5C4F\u5C3A\u5BF8":"\u5C4F\u5E55\u5C3A\u5BF8"}<span class="sort-arrow">${sortKey==='screen'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
+        <th>\u5206\u8FA8\u7387</th>
+        <th class="sortable${sortKey==='ppi'?' sort-active':''}" data-sortkey="ppi">PPI<span class="sort-arrow">${sortKey==='ppi'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
+        <th class="sortable${sortKey==='w'?' sort-active':''}" data-sortkey="w">${currentCat==="foldable"?"\u5C55\u5F00\u5BBD (mm)":"\u673A\u8EAB\u5BBD (mm)"}<span class="sort-arrow">${sortKey==='w'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
+        <th class="sortable${sortKey==='h'?' sort-active':''}" data-sortkey="h">${currentCat==="foldable"?"\u5C55\u5F00\u9AD8 (mm)":"\u673A\u8EAB\u9AD8 (mm)"}<span class="sort-arrow">${sortKey==='h'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
+        <th class="sortable bezel-col${sortKey==='bt'?' sort-active':''}" data-sortkey="bt">\u4E0A\u8FB9\u6846 (mm)<span class="sort-arrow">${sortKey==='bt'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span><br><span class="bezel-est-badge">\u4F30\u7B97</span></th>
+        <th class="sortable bezel-col${sortKey==='bb'?' sort-active':''}" data-sortkey="bb">\u4E0B\u8FB9\u6846 (mm)<span class="sort-arrow">${sortKey==='bb'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span><br><span class="bezel-est-badge">\u4F30\u7B97</span></th>
+        <th class="sortable bezel-col${sortKey==='bl'?' sort-active':''}" data-sortkey="bl">\u5DE6\u8FB9\u6846 (mm)<span class="sort-arrow">${sortKey==='bl'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span><br><span class="bezel-est-badge">\u4F30\u7B97</span></th>
+        <th class="sortable bezel-col${sortKey==='br'?' sort-active':''}" data-sortkey="br">\u53F3\u8FB9\u6846 (mm)<span class="sort-arrow">${sortKey==='br'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span><br><span class="bezel-est-badge">\u4F30\u7B97</span></th>
+        <th class="sortable${sortKey==='weight'?' sort-active':''}" data-sortkey="weight">\u91CD\u91CF (g)<span class="sort-arrow">${sortKey==='weight'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
       </tr>
     </thead><tbody>`;
 
