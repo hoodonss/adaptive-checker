@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2020-2026 移动设备屏幕尺寸全盘点 v1.6</title>
+<title>2020-2026 移动设备屏幕尺寸全盘点 v1.7</title>
 <style>
   :root {
     --bg: #f5f5f7;
@@ -42,7 +42,7 @@
     top: 0;
     z-index: 100;
   }
-  /* Sticky filter/search area below header (v1.6) */
+  /* Sticky filter/search area below header (v1.7) */
   #filterArea {
     position: sticky;
     top: var(--header-h, 120px);
@@ -141,7 +141,7 @@
     border-color: var(--text-primary);
   }
 
-  /* Search bar (v1.6) */
+  /* Search bar (v1.7) */
   .search-bar {
     max-width: 1448px;
     margin: 12px auto 0;
@@ -332,6 +332,9 @@
 
   /* Table */
   .brand-body { overflow-x: auto; }
+  .bezel-group-th { text-align:center !important; border-left:1px solid var(--border); border-right:1px solid var(--border); background:#fff8e1 !important; }
+  .bezel-group-th .src-tag { vertical-align:middle; margin-left:4px; text-transform:none; letter-spacing:0; }
+  .bezel-cell-tag { display:inline-block; margin-left:4px; font-size:10px; padding:0 5px; border-radius:4px; vertical-align:middle; }
   table {
     width: 100%;
     border-collapse: collapse;
@@ -489,7 +492,7 @@
 
 <div class="header">
   <div class="header-inner">
-    <h1>2020-2026 移动设备屏幕尺寸全盘点 <span style="font-size:13px;font-weight:400;color:var(--text-tertiary)">v1.6</span></h1>
+    <h1>2020-2026 移动设备屏幕尺寸全盘点 <span style="font-size:13px;font-weight:400;color:var(--text-tertiary)">v1.7</span></h1>
     <p>覆盖手机、平板、折叠屏三大品类 | 华为、苹果、三星、小米、OPPO、vivo、荣耀、摩托罗拉、Google、联想 | 数据截至 2026年5月</p>
     <div class="cat-tabs">
       <div class="cat-tab active" data-cat="phone">📱 手机</div>
@@ -1177,7 +1180,7 @@ function renderContent() {
     data = filterFoldables(currentFilter);
   }
 
-  // v1.6: apply keyword + size-range search
+  // v1.7: apply keyword + size-range search
   const hasSearch = (searchKw.trim() !== "") || (minSize != null) || (maxSize != null) || (minW != null) || (maxW != null) || (minH != null) || (maxH != null);
   data = applySearch(data);
 
@@ -1215,22 +1218,26 @@ function renderContent() {
       <span class="brand-arrow">\u25BC</span>
     </div>`;
     html += `<div class="brand-body"><table>`;
-    html += `<thead><tr>
-      <th>\u8BBE\u5907</th>
-      <th>\u5E74\u4EFD</th>
-      ${currentCat==="foldable"?"<th>\u7C7B\u578B</th>":""}
-      <th>${currentCat==="foldable"?"\u5185\u5C4F\u5C3A\u5BF8":"\u5C4F\u5E55\u5C3A\u5BF8"}</th>
-      <th>\u5206\u8FA8\u7387</th>
-      <th>PPI</th>
-      <th>${currentCat==="foldable"?"\u5C55\u5F00\u5BBD (mm)":"\u673A\u8EAB\u5BBD (mm)"}</th>
-      <th>${currentCat==="foldable"?"\u5C55\u5F00\u9AD8 (mm)":"\u673A\u8EAB\u9AD8 (mm)"}</th>
-      <th>\u4E0A\u8FB9\u6846 (mm)</th>
-      <th>\u4E0B\u8FB9\u6846 (mm)</th>
-      <th>\u5DE6\u8FB9\u6846 (mm)</th>
-      <th>\u53F3\u8FB9\u6846 (mm)</th>
-      <th>\u91CD\u91CF (g)</th>
-      <th>\u6765\u6E90</th>
-    </tr></thead><tbody>`;
+    html += `<thead>
+      <tr>
+        <th rowspan="2">\u8BBE\u5907</th>
+        <th rowspan="2">\u5E74\u4EFD</th>
+        ${currentCat==="foldable"?'<th rowspan="2">\u7C7B\u578B</th>':""}
+        <th rowspan="2">${currentCat==="foldable"?"\u5185\u5C4F\u5C3A\u5BF8":"\u5C4F\u5E55\u5C3A\u5BF8"}</th>
+        <th rowspan="2">\u5206\u8FA8\u7387</th>
+        <th rowspan="2">PPI</th>
+        <th rowspan="2">${currentCat==="foldable"?"\u5C55\u5F00\u5BBD (mm)":"\u673A\u8EAB\u5BBD (mm)"}</th>
+        <th rowspan="2">${currentCat==="foldable"?"\u5C55\u5F00\u9AD8 (mm)":"\u673A\u8EAB\u9AD8 (mm)"}</th>
+        <th class="bezel-group-th" colspan="4">\u8FB9\u6846\uFF08\u9ED1\u8FB9\uFF09<span class="src-tag src-est">\u4F30\u7B97</span></th>
+        <th rowspan="2">\u91CD\u91CF (g)</th>
+      </tr>
+      <tr>
+        <th>\u4E0A\u8FB9\u6846 (mm)</th>
+        <th>\u4E0B\u8FB9\u6846 (mm)</th>
+        <th>\u5DE6\u8FB9\u6846 (mm)</th>
+        <th>\u53F3\u8FB9\u6846 (mm)</th>
+      </tr>
+    </thead><tbody>`;
 
     devices.forEach(d => {
       html += `<tr>`;
@@ -1244,19 +1251,20 @@ function renderContent() {
       html += `<td class="num">${fmt(d.ppi)}</td>`;
       html += `<td class="num">${fmt(d.w)}</td>`;
       html += `<td class="num">${fmt(d.h)}</td>`;
-      html += `<td class="num">${fmt(d.bt)}</td>`;
+      // v1.7: bezel source moved to grouped header (default 估算). Only flag rows that are NOT 估算 (待补/缺失) inline.
+      const btTag = (d.bezel_src && d.bezel_src !== "est") ? (' <span class="bezel-cell-tag src-'+d.bezel_src+'">'+SRC_MAP[d.bezel_src]+'</span>') : "";
+      html += `<td class="num">${fmt(d.bt)}${btTag}</td>`;
       html += `<td class="num">${fmt(d.bb)}</td>`;
       html += `<td class="num">${fmt(d.bl)}</td>`;
       html += `<td class="num">${fmt(d.br)}</td>`;
       html += `<td class="num ${weightClass(d.weight, currentCat)}">${fmt(d.weight)}</td>`;
-      html += `<td>${d.bezel_src?('<span class="src-tag src-'+d.bezel_src+'">'+SRC_MAP[d.bezel_src]+'</span>'):'\u2014'}</td>`;
       html += `</tr>`;
     });
 
     html += `</tbody></table></div></div>`;
   });
 
-  // v1.6: no-result message
+  // v1.7: no-result message
   if (data.length === 0) {
     html += `<div class="no-result">\u6ca1\u6709\u7b26\u5408\u6761\u4ef6\u7684\u8bbe\u5907\uff0c\u8bf7\u8c03\u6574\u5173\u952e\u8bcd\u6216\u5c3a\u5bf8\u8303\u56f4\u3002</div>`;
   }
@@ -1280,6 +1288,7 @@ function renderContent() {
 
   note += '<br><br><strong>边框（黑边）数据说明：</strong>';
   note += '<br>• 上/下/左/右边框指屏幕可视区域边缘到机身物理边缘的距离（mm），折叠屏取内屏';
+  note += '<br>• 表头「边框（黑边）<span class="src-tag src-est">估算</span>」标签表明：<strong>仅这四列边框为估算值</strong>，其余列（屏幕尺寸/分辨率/机身尺寸/重量等）为官方/权威数据，不受此标签影响';
   note += '<br>• <span class="src-tag src-est">估算</span> 无真实实测参数的设备，按以下公式计算：<strong>长边黑边（上=下）=（设备长边 − 屏幕长边）/2</strong>；<strong>短边黑边（左=右）=（设备短边 − 屏幕短边）/2</strong>。其中屏幕长/短边 = 分辨率长/短边 ÷ PPI × 25.4';
   note += '<br>• 由公式可知上下取同值、左右取同值（未区分额头与下巴），属均分近似，误差约 ±0.3–0.8mm';
   note += '<br>• <span class="src-tag src-missing">缺失</span> 表示原始分辨率/PPI/机身尺寸口径不一致、反推出现负值或明显失真，故留空';
@@ -1372,7 +1381,7 @@ document.querySelectorAll(".cat-tab").forEach(tab => {
   });
 });
 
-// ==================== STICKY OFFSET SYNC (v1.6) ====================
+// ==================== STICKY OFFSET SYNC (v1.7) ====================
 // 让筛选/搜索栏吸顶时正好贴在 header 下方：把 header 实际高度写入 --header-h
 function syncHeaderHeight() {
   const header = document.querySelector(".header");
