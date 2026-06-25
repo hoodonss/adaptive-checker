@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2020-2026 移动设备屏幕尺寸全盘点 v1.6</title>
+<style>
+  :root {
+    --bg: #f5f5f7;
+    --card: #ffffff;
+    --border: #e5e5ea;
+    --text-primary: #1d1d1f;
+    --text-secondary: #6e6e73;
+    --text-tertiary: #aeaeb2;
+    --accent-huawei: #cf0a2c;
+    --accent-samsung: #1428a0;
+    --accent-xiaomi: #ff6700;
+    --accent-oppo: #1ba784;
+    --accent-vivo: #415fff;
+    --accent-honor: #00a0e9;
+    --accent-motorola: #5c2d91;
+    --accent-apple: #555555;
+    --accent-google: #4285f4;
+    --accent-lenovo: #e2231a;
+    --accent-other: #86868b;
+    --tag-bg: #f0f0f5;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', 'PingFang SC', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.5;
+  }
+
+  /* Header */
+  .header {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 0 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-inner { max-width: 1448px; margin: 0 auto; padding: 0 24px; }
+  .header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    margin-bottom: 2px;
+  }
+  .header p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+  }
+
+  /* Main category tabs */
+  .cat-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .cat-tab {
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    user-select: none;
+    white-space: nowrap;
+  }
+  .cat-tab:hover { color: var(--text-primary); }
+  .cat-tab.active {
+    color: var(--text-primary);
+    border-bottom-color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  /* Stats bar */
+  .stats-bar {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+    margin-bottom: 4px;
+    flex-wrap: wrap;
+  }
+  .stat-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--tag-bg);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+  .stat-chip strong {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 15px;
+  }
+
+  /* Sub filter tabs (for foldable) */
+  .filter-bar {
+    max-width: 1448px;
+    margin: 12px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    padding: 7px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    font-size: 13px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .filter-btn:hover { border-color: #1d1d1f; color: var(--text-primary); }
+  .filter-btn.active {
+    background: var(--text-primary);
+    color: #fff;
+    border-color: var(--text-primary);
+  }
+
+  /* Search bar (v1.6) */
+  .search-bar {
+    max-width: 1448px;
+    margin: 12px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .search-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 10px;
+  }
+  .search-group label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+  .search-input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 13px;
+    color: var(--text-primary);
+    font-family: inherit;
+  }
+  .search-input.kw { width: 180px; }
+  .search-input.size { width: 56px; font-variant-numeric: tabular-nums; }
+  .search-input::placeholder { color: var(--text-tertiary); }
+  .search-sep { color: var(--text-tertiary); font-size: 12px; }
+  .search-clear {
+    border: 1px solid var(--border);
+    background: var(--card);
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-size: 13px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .search-clear:hover { border-color: #1d1d1f; color: var(--text-primary); }
+  .search-result-count {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  .search-result-count strong { color: var(--text-primary); font-weight: 600; }
+  .no-result {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 48px 24px;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 14px;
+  }
+  @media (max-width: 768px) {
+    .search-bar { padding: 0 12px; gap: 8px; }
+    .search-input.kw { width: 130px; }
+  }
+
+  /* Main content */
+  .main { max-width: 1448px; margin: 16px auto; padding: 0 24px 40px; }
+
+  /* Insight section */
+  .insight-section {
+    background: var(--card);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    padding: 20px 24px;
+    margin-bottom: 20px;
+  }
+  .insight-section h2 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .insight-section h2 .insight-icon {
+    font-size: 16px;
+  }
+  .insight-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+  }
+  .insight-card {
+    background: #fafafa;
+    border-radius: 8px;
+    padding: 16px;
+    border: 1px solid #f0f0f0;
+  }
+  .insight-card h3 {
+    font-size: 13px;
+    color: var(--text-primary);
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .insight-card .insight-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .tag-size-xs { background: #e8f5e9; color: #2e7d32; }
+  .tag-size-s { background: #e3f2fd; color: #1565c0; }
+  .tag-size-m { background: #fff3e0; color: #e65100; }
+  .tag-size-l { background: #fce4ec; color: #c62828; }
+  .tag-size-xl { background: #f3e5f5; color: #6a1b9a; }
+  .tag-size-xxl { background: #efebe9; color: #4e342e; }
+  .insight-card p {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+  .insight-card .size-range {
+    display: inline-block;
+    padding: 2px 6px;
+    background: #f0f0f5;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin: 2px 2px;
+  }
+  .insight-summary {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid #f0f0f0;
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.8;
+  }
+  .insight-summary strong {
+    color: var(--text-primary);
+  }
+
+  /* Brand section */
+  .brand-section {
+    margin-bottom: 20px;
+    background: var(--card);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .brand-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+  }
+  .brand-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .brand-name {
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .brand-count {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-left: auto;
+  }
+  .brand-arrow {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    transition: transform 0.2s;
+  }
+  .brand-section.collapsed .brand-arrow { transform: rotate(-90deg); }
+  .brand-section.collapsed .brand-body { display: none; }
+
+  /* Table */
+  .brand-body { overflow-x: auto; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    min-width: 1480px;
+  }
+  thead th {
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: #fafafa;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+  }
+  tbody tr { border-bottom: 1px solid #f0f0f0; transition: background 0.15s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #fafafa; }
+  tbody td {
+    padding: 10px 12px;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+  td.device-cell { white-space: normal; min-width: 200px; }
+  .device-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    display: block;
+    line-height: 1.3;
+  }
+  .type-tag {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .type-h { background: #e8f0fe; color: #1a73e8; }
+  .type-v { background: #fce8e6; color: #d93025; }
+  .type-t { background: #e6f4ea; color: #137333; }
+  .type-w { background: #fef3e0; color: #e37400; }
+
+  .num { font-variant-numeric: tabular-nums; }
+  .weight-light { color: #137333; font-weight: 600; }
+  .weight-heavy { color: #d93025; }
+
+  /* Trend chart area */
+  .trend-section {
+    background: var(--card);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .trend-section h2 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+  .trend-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+  }
+  .trend-card {
+    background: #fafafa;
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .trend-card h3 {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .bar-chart { display: flex; flex-direction: column; gap: 6px; }
+  .bar-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .bar-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+    min-width: 50px;
+    text-align: right;
+  }
+  .bar-track {
+    flex: 1;
+    height: 18px;
+    background: #e8e8ed;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding-left: 6px;
+    font-size: 10px;
+    color: #fff;
+    font-weight: 500;
+    white-space: nowrap;
+    min-width: fit-content;
+    transition: width 0.6s ease;
+  }
+  .bar-value {
+    font-size: 11px;
+    color: var(--text-secondary);
+    min-width: 50px;
+    font-weight: 500;
+  }
+
+  /* Footer note */
+  .footnote {
+    background: var(--card);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    padding: 16px 20px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    margin-top: 20px;
+  }
+  .footnote strong { color: var(--text-primary); }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .header { padding: 20px 0 0; }
+    .header-inner { padding: 0 12px; }
+    .main { padding: 0 12px 32px; }
+    .filter-bar { padding: 0 12px; }
+    .stats-bar { gap: 6px; }
+    .stat-chip { padding: 4px 8px; font-size: 11px; }
+    .cat-tab { padding: 8px 14px; font-size: 13px; }
+    .insight-grid { grid-template-columns: 1fr; }
+  }
+  .src-tag { display:inline-block; padding:1px 6px; border-radius:4px; font-size:10px; font-weight:500; }
+  .src-est { background:#fff8e1; color:#a06800; }
+  .src-measured { background:#e6f4ea; color:#137333; }
+  .src-missing { background:#f0f0f5; color:#aeaeb2; }
+  .src-todo { background:#fdecea; color:#c0392b; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <h1>2020-2026 移动设备屏幕尺寸全盘点 <span style="font-size:13px;font-weight:400;color:var(--text-tertiary)">v1.6</span></h1>
+    <p>覆盖手机、平板、折叠屏三大品类 | 华为、苹果、三星、小米、OPPO、vivo、荣耀、摩托罗拉、Google、联想 | 数据截至 2026年5月</p>
+    <div class="cat-tabs">
+      <div class="cat-tab active" data-cat="phone">📱 手机</div>
+      <div class="cat-tab" data-cat="tablet">🖥 平板</div>
+      <div class="cat-tab" data-cat="foldable">📲 折叠屏</div>
+    </div>
+    <div class="stats-bar" id="statsBar"></div>
+  </div>
+</div>
+
+<div id="filterArea"></div>
+<div class="main" id="mainContent"></div>
+
+<script>
+// ==================== DATA ====================
+
+// ---- 手机数据 ----
+const PHONES = [
+  { brand:"apple", name:"iPhone 12 mini", year:2020, screen:5.4, res:"2340×1080", ppi:476, w:64.2, h:131.5, weight:135, bt:3.3, bb:3.3, bl:3.3, br:3.3, bezel_src:"est" },
+  { brand:"apple", name:"iPhone 12", year:2020, screen:6.1, res:"1170×2532", ppi:460, w:71.5, h:146.7, weight:164, bt:3.4, bb:3.4, bl:3.4, br:3.4, bezel_src:"est" },
+  { brand:"apple", name:"iPhone 12 Pro", year:2020, screen:6.1, res:"1170×2532", ppi:460, w:71.5, h:146.7, weight:187, bt:3.4, bb:3.4, bl:3.4, br:3.4, bezel_src:"est" },
+  { brand:"apple", name:"iPhone 12 Pro Max", year:2020, screen:6.7, res:"1284×2778", ppi:458, w:78.1, h:160.8, weight:226, bt:3.4, bb:3.4, bl:3.4, br:3.4, bezel_src:"est" },
+  { brand:"apple", name:"iPhone 13 mini", year:2021, screen:5.4, res:"2340×1080", ppi:476, w:64.2, h:131.5, weight:141, bt:3.3, bb:3.3, bl:3.3, br:3.3, bezel_src:"est" },
+  { brand:"apple", name:"iPhone 13", year:2021, screen:6.1, res:"1170×2532", ppi:460, w:71.5, h:146.7, weight:174, bt:3.4, bb:3.4, bl:3.4, br:3.4, bezel_src:"est" },
+  { brand:"apple", name:"iPhone 13 Pro", year:2021, screen:6.1, res:"1170×2532", ppi:460, w:71.5, h:146.7, weight:203, bt:3.4, bb:3.4, bl:3.4, br:3.4, bezel_src:"est" },
+  { brand:"apple", name:"iPhone 13 Pro Max", year:2021, screen:6.7, res:"1284×2778", ppi:458, w:78.1, h:160.8, weight:238, bt:3.4, bb:3.4, bl:3.4, br:3.4, bezel_src:"est" },
+  { brand:"apple", name:"iPhone SE (3rd gen)", year:2022, screen:4.7, res:"1334×750", ppi:326, w:67.3, h:138.4, weight:144, bt:17.2, bb:17.2, bl:4.4, br:4.4, bezel_src:"est" },
+  { brand:"apple", name:"iPhone 14", year:2022, screen:6.1, res:"1170×2532", ppi:460, w:71.5, h:146.7, weight:172, bt:3.4, bb:3.4, bl:3.4, br:3.4, bezel_src:"est" },
+  { brand:"apple", name:"iPhone 14 Plus", year:2022, screen:6.7, res:"1284×2778", ppi:458, w:78.1, h:160.8, weight:203, bt:3.4, bb:3.4, bl:3.4, br:3.4, bezel_src:"est" },
+  { brand:"apple", name:"iPhone 14 Pro", year:2022, screen:6.1, res:"1179×2556", ppi:460, w:71.5, h:147.5, weight:203, bt:3.2, bb:3.2, bl:3.2, br:3.2, bezel_src:"est" },
+  { brand:"apple", name:"iPhone 14 Pro Max", year:2022, screen:6.7, res:"1290×2796", ppi:460, w:77.6, h:160.7, weight:240, bt:3.2, bb:3.2, bl:3.2, br:3.2, bezel_src:"est" },
+  { brand:"apple", name:"iPhone 15", year:2023, screen:6.1, res:"1179×2556", ppi:460, w:71.6, h:147.6, weight:171, bt:3.2, bb:3.2, bl:3.2, br:3.2, bezel_src:"est" },
+  { brand:"apple", name:"iPhone 15 Plus", year:2023, screen:6.7, res:"1290×2796", ppi:460, w:76.7, h:159.9, weight:201, bt:2.8, bb:2.8, bl:2.7, br:2.7, bezel_src:"est" },
+  { brand:"apple", name:"iPhone 15 Pro", year:2023, screen:6.1, res:"1179×2556", ppi:460, w:70.6, h:146.6, weight:187, bt:2.7, bb:2.7, bl:2.7, br:2.7, bezel_src:"est" },
+  { brand:"apple", name:"iPhone 15 Pro Max", year:2023, screen:6.7, res:"1290×2796", ppi:460, w:76.7, h:159.9, weight:221, bt:2.8, bb:2.8, bl:2.7, br:2.7, bezel_src:"est" },
+  { brand:"apple", name:"iPhone 16e", year:2025, screen:6.1, res:"1170×2532", ppi:460, w:71.5, h:146.7, weight:167, bt:3.4, bb:3.4, bl:3.4, br:3.4, bezel_src:"est" },
+  { brand:"apple", name:"iPhone 16", year:2024, screen:6.1, res:"1179×2556", ppi:460, w:71.6, h:147.6, weight:170, bt:3.2, bb:3.2, bl:3.2, br:3.2, bezel_src:"est" },
+  { brand:"apple", name:"iPhone 16 Plus", year:2024, screen:6.7, res:"1290×2796", ppi:460, w:77.6, h:163, weight:199, bt:4.3, bb:4.3, bl:3.2, br:3.2, bezel_src:"est" },
+  { brand:"apple", name:"iPhone 16 Pro", year:2024, screen:6.3, res:"1206×2622", ppi:460, w:71.5, h:149.6, weight:199, bt:2.4, bb:2.4, bl:2.5, br:2.5, bezel_src:"est" },
+  { brand:"apple", name:"iPhone 16 Pro Max", year:2024, screen:6.9, res:"1320×2868", ppi:460, w:77.6, h:163, weight:227, bt:2.3, bb:2.3, bl:2.4, br:2.4, bezel_src:"est" },
+  { brand:"apple", name:"iPhone 17", year:2025, screen:6.3, res:"1206×2622", ppi:460, w:71.5, h:149.6, weight:177, bt:2.4, bb:2.4, bl:2.5, br:2.5, bezel_src:"est" },
+  { brand:"apple", name:"iPhone 17 Air", year:2025, screen:6.5, res:"1260×2736", ppi:460, w:74.7, h:156.2, weight:165, bt:2.6, bb:2.6, bl:2.6, br:2.6, bezel_src:"est" },
+  { brand:"apple", name:"iPhone 17 Pro", year:2025, screen:6.3, res:"1206×2622", ppi:460, w:71.9, h:150, weight:204, bt:2.6, bb:2.6, bl:2.7, br:2.7, bezel_src:"est" },
+  { brand:"apple", name:"iPhone 17 Pro Max", year:2025, screen:6.9, res:"1320×2868", ppi:460, w:78, h:163.4, weight:231, bt:2.5, bb:2.5, bl:2.6, br:2.6, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy S20", year:2020, screen:6.2, res:"3200×1440", ppi:563, w:69.1, h:151.7, weight:163, bt:3.7, bb:3.7, bl:2.1, br:2.1, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy S20+", year:2020, screen:6.7, res:"3200×1440", ppi:524, w:73.7, h:161.9, weight:186, bt:3.4, bb:3.4, bl:1.9, br:1.9, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy S20 Ultra", year:2020, screen:6.9, res:"3200×1440", ppi:511, w:76, h:166.9, weight:220, bt:3.9, bb:3.9, bl:2.2, br:2.2, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy S21", year:2021, screen:6.2, res:"2400×1080", ppi:424, w:71.2, h:151.7, weight:171, bt:4.0, bb:4.0, bl:3.3, br:3.3, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy S21+", year:2021, screen:6.7, res:"2400×1080", ppi:394, w:75.6, h:161.5, weight:200, bt:3.4, bb:3.4, bl:3.0, br:3.0, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy S21 Ultra", year:2021, screen:6.8, res:"3200×1440", ppi:516, w:75.6, h:165.1, weight:228, bt:3.8, bb:3.8, bl:2.4, br:2.4, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy S22", year:2022, screen:6.1, res:"2340×1080", ppi:422, w:70.6, h:146, weight:167, bt:2.6, bb:2.6, bl:2.8, br:2.8, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy S22+", year:2022, screen:6.6, res:"2340×1080", ppi:390, w:75.8, h:157.4, weight:196, bt:2.5, bb:2.5, bl:2.7, br:2.7, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy S22 Ultra", year:2022, screen:6.8, res:"3080×1440", ppi:500, w:77.9, h:163.3, weight:228, bt:3.4, bb:3.4, bl:2.4, br:2.4, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy S23", year:2023, screen:6.1, res:"2340×1080", ppi:422, w:70.9, h:146.3, weight:168, bt:2.7, bb:2.7, bl:2.9, br:2.9, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy S23+", year:2023, screen:6.6, res:"2340×1080", ppi:390, w:76.2, h:157.8, weight:195, bt:2.7, bb:2.7, bl:2.9, br:2.9, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy S23 Ultra", year:2023, screen:6.8, res:"3088×1440", ppi:500, w:78.1, h:163.4, weight:234, bt:3.3, bb:3.3, bl:2.5, br:2.5, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy S24", year:2024, screen:6.2, res:"2340×1080", ppi:416, w:70.6, h:147, weight:167, bt:2.1, bb:2.1, bl:2.3, br:2.3, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy S24+", year:2024, screen:6.7, res:"3120×1440", ppi:513, w:75.9, h:158.5, weight:196, bt:2.0, bb:2.0, bl:2.3, br:2.3, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy S24 Ultra", year:2024, screen:6.8, res:"3120×1440", ppi:505, w:79, h:162.3, weight:232, bt:2.7, bb:2.7, bl:3.3, br:3.3, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy S25", year:2025, screen:6.2, res:"2340×1080", ppi:416, w:70.5, h:146.9, weight:162, bt:2.0, bb:2.0, bl:2.3, br:2.3, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy S25+", year:2025, screen:6.7, res:"3120×1440", ppi:513, w:75.8, h:158.4, weight:190, bt:2.0, bb:2.0, bl:2.3, br:2.3, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy S25 Edge", year:2025, screen:6.7, res:"3120×1440", ppi:513, w:75.6, h:158.2, weight:163, bt:1.9, bb:1.9, bl:2.2, br:2.2, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy S25 Ultra", year:2025, screen:6.9, res:"3120×1440", ppi:505, w:77.6, h:162.8, weight:218, bt:2.9, bb:2.9, bl:2.6, br:2.6, bezel_src:"est" },
+  { brand:"huawei", name:"P40", year:2020, screen:6.1, res:"2340×1080", ppi:422, w:71.1, h:148.9, weight:175, bt:4.0, bb:4.0, bl:3.0, br:3.0, bezel_src:"est" },
+  { brand:"huawei", name:"P40 Pro", year:2020, screen:6.58, res:"1200×2640", ppi:441, w:72.6, h:158.2, weight:209, bt:3.1, bb:3.1, bl:1.7, br:1.7, bezel_src:"est" },
+  { brand:"huawei", name:"Mate 40", year:2020, screen:6.5, res:"2376×1080", ppi:402, w:72.5, h:158.6, weight:188, bt:4.2, bb:4.2, bl:2.1, br:2.1, bezel_src:"est" },
+  { brand:"huawei", name:"Mate 40 Pro", year:2020, screen:6.76, res:"2772×1344", ppi:456, w:75.5, h:162.9, weight:212, bt:4.2, bb:4.2, bl:0.3, br:0.3, bezel_src:"est" },
+  { brand:"huawei", name:"Mate 40 Pro+", year:2020, screen:6.76, res:"2772×1344", ppi:456, w:75.5, h:162.9, weight:230, bt:4.2, bb:4.2, bl:0.3, br:0.3, bezel_src:"est" },
+  { brand:"huawei", name:"P50", year:2021, screen:6.5, res:"2700×1224", ppi:458, w:73.8, h:156.5, weight:181, bt:3.4, bb:3.4, bl:3.0, br:3.0, bezel_src:"est" },
+  { brand:"huawei", name:"P50 Pro", year:2021, screen:6.6, res:"2700×1228", ppi:449, w:72.8, h:158.8, weight:195, bt:3.0, bb:3.0, bl:1.7, br:1.7, bezel_src:"est" },
+  { brand:"huawei", name:"P50 Pocket", year:2021, screen:6.9, res:"2790×1136", ppi:442, w:75.5, h:170, weight:190, bt:4.8, bb:4.8, bl:5.1, br:5.1, bezel_src:"est" },
+  { brand:"huawei", name:"Mate 50", year:2022, screen:6.7, res:"2700×1224", ppi:444, w:76.1, h:161.5, weight:206, bt:3.5, bb:3.5, bl:3.0, br:3.0, bezel_src:"est" },
+  { brand:"huawei", name:"Mate 50 Pro", year:2022, screen:6.74, res:"2616×1212", ppi:428, w:75.5, h:162.1, weight:209, bt:3.4, bb:3.4, bl:1.8, br:1.8, bezel_src:"est" },
+  { brand:"huawei", name:"P60", year:2023, screen:6.67, res:"2700×1220", ppi:444, w:74.5, h:161, weight:197, bt:3.3, bb:3.3, bl:2.4, br:2.4, bezel_src:"est" },
+  { brand:"huawei", name:"P60 Pro", year:2023, screen:6.67, res:"2700×1220", ppi:444, w:74.5, h:161, weight:200, bt:3.3, bb:3.3, bl:2.4, br:2.4, bezel_src:"est" },
+  { brand:"huawei", name:"Mate 60", year:2023, screen:6.69, res:"2688×1216", ppi:440, w:76, h:161.4, weight:209, bt:3.1, bb:3.1, bl:2.9, br:2.9, bezel_src:"est" },
+  { brand:"huawei", name:"Mate 60 Pro", year:2023, screen:6.82, res:"2720×1260", ppi:452, w:79, h:163.65, weight:225, bt:5.4, bb:5.4, bl:4.1, br:4.1, bezel_src:"est" },
+  { brand:"huawei", name:"Mate 60 Pro+", year:2023, screen:6.82, res:"2720×1260", ppi:452, w:79, h:163.65, weight:225, bt:5.4, bb:5.4, bl:4.1, br:4.1, bezel_src:"est" },
+  { brand:"huawei", name:"Pura 70", year:2024, screen:6.6, res:"2760×1256", ppi:460, w:74.3, h:157.6, weight:207, bt:2.6, bb:2.6, bl:2.5, br:2.5, bezel_src:"est" },
+  { brand:"huawei", name:"Pura 70 Pro", year:2024, screen:6.8, res:"2844×1260", ppi:460, w:75.1, h:162.6, weight:220, bt:2.8, bb:2.8, bl:2.8, br:2.8, bezel_src:"est" },
+  { brand:"huawei", name:"Pura 70 Pro+", year:2024, screen:6.8, res:"2844×1260", ppi:460, w:75.1, h:162.6, weight:220, bt:2.8, bb:2.8, bl:2.8, br:2.8, bezel_src:"est" },
+  { brand:"huawei", name:"Pura 70 Ultra", year:2024, screen:6.8, res:"2844×1260", ppi:460, w:75.1, h:162.6, weight:226, bt:2.8, bb:2.8, bl:2.8, br:2.8, bezel_src:"est" },
+  { brand:"huawei", name:"Mate 70", year:2024, screen:6.7, res:"2688×1216", ppi:441, w:75.9, h:160.9, weight:203, bt:3.0, bb:3.0, bl:2.9, br:2.9, bezel_src:"est" },
+  { brand:"huawei", name:"Mate 70 Pro", year:2024, screen:6.9, res:"2832×1316", ppi:456, w:75.4, h:162.8, weight:221, bt:2.5, bb:2.5, bl:1.0, br:1.0, bezel_src:"est" },
+  { brand:"huawei", name:"Mate 70 Pro+", year:2024, screen:6.9, res:"2832×1316", ppi:456, w:79.5, h:164.6, weight:226, bt:3.4, bb:3.4, bl:3.1, br:3.1, bezel_src:"est" },
+  { brand:"huawei", name:"Mate 70 RS", year:2024, screen:6.9, res:"2832×1316", ppi:456, w:79.5, h:164.6, weight:231, bt:3.4, bb:3.4, bl:3.1, br:3.1, bezel_src:"est" },
+  { brand:"huawei", name:"Pura 80", year:2025, screen:6.6, res:"2760×1256", ppi:460, w:74.3, h:157.6, weight:199, bt:2.6, bb:2.6, bl:2.5, br:2.5, bezel_src:"est" },
+  { brand:"huawei", name:"Pura 80 Pro", year:2025, screen:6.8, res:"2848×1276", ppi:460, w:75.1, h:162.6, weight:219, bt:2.7, bb:2.7, bl:2.3, br:2.3, bezel_src:"est" },
+  { brand:"huawei", name:"Pura 80 Ultra", year:2025, screen:6.8, res:"2848×1276", ppi:460, w:76.1, h:163, weight:234, bt:2.9, bb:2.9, bl:2.8, br:2.8, bezel_src:"est" },
+  { brand:"xiaomi", name:"小米10", year:2020, screen:6.67, res:"2340×1080", ppi:386, w:74.8, h:162.5, weight:208, bt:4.3, bb:4.3, bl:1.9, br:1.9, bezel_src:"est" },
+  { brand:"xiaomi", name:"小米10 Pro", year:2020, screen:6.67, res:"2340×1080", ppi:386, w:74.8, h:162.5, weight:208, bt:4.3, bb:4.3, bl:1.9, br:1.9, bezel_src:"est" },
+  { brand:"xiaomi", name:"小米10 Ultra", year:2020, screen:6.67, res:"2340×1080", ppi:386, w:75.04, h:162.38, weight:222, bt:4.2, bb:4.2, bl:2.0, br:2.0, bezel_src:"est" },
+  { brand:"xiaomi", name:"小米11", year:2021, screen:6.81, res:"3200×1440", ppi:515, w:74.6, h:164.3, weight:196, bt:3.2, bb:3.2, bl:1.8, br:1.8, bezel_src:"est" },
+  { brand:"xiaomi", name:"小米11 Pro", year:2021, screen:6.81, res:"3200×1440", ppi:515, w:74.6, h:164.3, weight:208, bt:3.2, bb:3.2, bl:1.8, br:1.8, bezel_src:"est" },
+  { brand:"xiaomi", name:"小米11 Ultra", year:2021, screen:6.81, res:"3200×1440", ppi:515, w:74.6, h:164.3, weight:234, bt:3.2, bb:3.2, bl:1.8, br:1.8, bezel_src:"est" },
+  { brand:"xiaomi", name:"小米12", year:2022, screen:6.28, res:"2400×1080", ppi:419, w:69.9, h:152.7, weight:180, bt:3.6, bb:3.6, bl:2.2, br:2.2, bezel_src:"est" },
+  { brand:"xiaomi", name:"小米12 Pro", year:2022, screen:6.73, res:"3200×1440", ppi:522, w:74.6, h:163.6, weight:205, bt:3.9, bb:3.9, bl:2.3, br:2.3, bezel_src:"est" },
+  { brand:"xiaomi", name:"小米12S Ultra", year:2022, screen:6.73, res:"3200×1440", ppi:522, w:75, h:163.17, weight:225, bt:3.7, bb:3.7, bl:2.5, br:2.5, bezel_src:"est" },
+  { brand:"xiaomi", name:"小米13", year:2023, screen:6.36, res:"2400×1080", ppi:414, w:71.5, h:152.8, weight:189, bt:2.8, bb:2.8, bl:2.6, br:2.6, bezel_src:"est" },
+  { brand:"xiaomi", name:"小米13 Pro", year:2023, screen:6.73, res:"3200×1440", ppi:522, w:74.6, h:162.9, weight:229, bt:3.6, bb:3.6, bl:2.3, br:2.3, bezel_src:"est" },
+  { brand:"xiaomi", name:"小米13 Ultra", year:2023, screen:6.73, res:"3200×1440", ppi:522, w:74.64, h:163.18, weight:227, bt:3.7, bb:3.7, bl:2.3, br:2.3, bezel_src:"est" },
+  { brand:"xiaomi", name:"小米14", year:2024, screen:6.36, res:"2670×1200", ppi:460, w:71.5, h:152.8, weight:193, bt:2.7, bb:2.7, bl:2.6, br:2.6, bezel_src:"est" },
+  { brand:"xiaomi", name:"小米14 Pro", year:2024, screen:6.73, res:"3200×1440", ppi:522, w:75.3, h:161.4, weight:223, bt:2.8, bb:2.8, bl:2.6, br:2.6, bezel_src:"est" },
+  { brand:"xiaomi", name:"小米14 Ultra", year:2024, screen:6.73, res:"3200×1440", ppi:522, w:75.3, h:161.4, weight:224, bt:2.8, bb:2.8, bl:2.6, br:2.6, bezel_src:"est" },
+  { brand:"xiaomi", name:"小米15", year:2025, screen:6.36, res:"2670×1200", ppi:460, w:71.2, h:152.3, weight:191, bt:2.4, bb:2.4, bl:2.5, br:2.5, bezel_src:"est" },
+  { brand:"xiaomi", name:"小米15 Pro", year:2025, screen:6.73, res:"3200×1440", ppi:522, w:75.3, h:161.3, weight:213, bt:2.8, bb:2.8, bl:2.6, br:2.6, bezel_src:"est" },
+  { brand:"xiaomi", name:"小米15 Ultra", year:2025, screen:6.73, res:"3200×1440", ppi:522, w:75.3, h:161.3, weight:226, bt:2.8, bb:2.8, bl:2.6, br:2.6, bezel_src:"est" },
+  { brand:"oppo", name:"Find X2", year:2020, screen:6.7, res:"3168×1440", ppi:513, w:74.5, h:164.9, weight:192, bt:4.0, bb:4.0, bl:1.6, br:1.6, bezel_src:"est" },
+  { brand:"oppo", name:"Find X2 Pro", year:2020, screen:6.7, res:"3168×1440", ppi:513, w:74.4, h:165.2, weight:200, bt:4.2, bb:4.2, bl:1.6, br:1.6, bezel_src:"est" },
+  { brand:"oppo", name:"Find X3", year:2021, screen:6.7, res:"3216×1440", ppi:525, w:74, h:163.6, weight:193, bt:4.0, bb:4.0, bl:2.2, br:2.2, bezel_src:"est" },
+  { brand:"oppo", name:"Find X3 Pro", year:2021, screen:6.7, res:"3216×1440", ppi:525, w:74, h:163.6, weight:193, bt:4.0, bb:4.0, bl:2.2, br:2.2, bezel_src:"est" },
+  { brand:"oppo", name:"Find X5", year:2022, screen:6.55, res:"2400×1080", ppi:402, w:72.6, h:160.3, weight:196, bt:4.3, bb:4.3, bl:2.2, br:2.2, bezel_src:"est" },
+  { brand:"oppo", name:"Find X5 Pro", year:2022, screen:6.7, res:"3216×1440", ppi:525, w:73.9, h:163.7, weight:218, bt:4.1, bb:4.1, bl:2.1, br:2.1, bezel_src:"est" },
+  { brand:"oppo", name:"Find X6", year:2023, screen:6.74, res:"2772×1240", ppi:450, w:74.1, h:162.9, weight:207, bt:3.2, bb:3.2, bl:2.1, br:2.1, bezel_src:"est" },
+  { brand:"oppo", name:"Find X6 Pro", year:2023, screen:6.82, res:"3168×1440", ppi:510, w:76.2, h:164.8, weight:218, bt:3.5, bb:3.5, bl:2.2, br:2.2, bezel_src:"est" },
+  { brand:"oppo", name:"Find X7", year:2024, screen:6.78, res:"2780×1264", ppi:450, w:75.4, h:162.7, weight:206, bt:2.9, bb:2.9, bl:2.0, br:2.0, bezel_src:"est" },
+  { brand:"oppo", name:"Find X7 Ultra", year:2024, screen:6.82, res:"3168×1440", ppi:510, w:76.2, h:164.3, weight:221, bt:3.3, bb:3.3, bl:2.2, br:2.2, bezel_src:"est" },
+  { brand:"oppo", name:"Find X8", year:2024, screen:6.59, res:"2760×1256", ppi:460, w:74.33, h:157.35, weight:193, bt:2.5, bb:2.5, bl:2.5, br:2.5, bezel_src:"est" },
+  { brand:"oppo", name:"Find X8 Pro", year:2024, screen:6.78, res:"2780×1264", ppi:450, w:76.7, h:162.3, weight:215, bt:2.7, bb:2.7, bl:2.7, br:2.7, bezel_src:"est" },
+  { brand:"oppo", name:"Find X8 Ultra", year:2025, screen:6.82, res:"3168×1440", ppi:510, w:76.8, h:163.5, weight:227, bt:2.9, bb:2.9, bl:2.5, br:2.5, bezel_src:"est" },
+  { brand:"vivo", name:"X50 Pro", year:2020, screen:6.56, res:"2376×1080", ppi:398, w:73, h:158.5, weight:192, bt:3.4, bb:3.4, bl:2.0, br:2.0, bezel_src:"est" },
+  { brand:"vivo", name:"X60 Pro", year:2021, screen:6.56, res:"2376×1080", ppi:398, w:73.24, h:158.57, weight:178, bt:3.5, bb:3.5, bl:2.2, br:2.2, bezel_src:"est" },
+  { brand:"vivo", name:"X70 Pro", year:2021, screen:6.56, res:"2376×1080", ppi:398, w:73.24, h:158.57, weight:185, bt:3.5, bb:3.5, bl:2.2, br:2.2, bezel_src:"est" },
+  { brand:"vivo", name:"X80", year:2022, screen:6.78, res:"2400×1080", ppi:388, w:75.23, h:164.95, weight:206, bt:3.9, bb:3.9, bl:2.3, br:2.3, bezel_src:"est" },
+  { brand:"vivo", name:"X80 Pro", year:2022, screen:6.78, res:"3200×1440", ppi:517, w:75.3, h:164.6, weight:219, bt:3.7, bb:3.7, bl:2.3, br:2.3, bezel_src:"est" },
+  { brand:"vivo", name:"X90", year:2023, screen:6.78, res:"2800×1260", ppi:452, w:75.28, h:164.05, weight:200, bt:3.4, bb:3.4, bl:2.2, br:2.2, bezel_src:"est" },
+  { brand:"vivo", name:"X90 Pro", year:2023, screen:6.78, res:"2800×1260", ppi:453, w:74.5, h:164.1, weight:215, bt:3.6, bb:3.6, bl:1.9, br:1.9, bezel_src:"est" },
+  { brand:"vivo", name:"X90 Pro+", year:2023, screen:6.78, res:"3200×1440", ppi:517, w:75.56, h:164.58, weight:221, bt:3.7, bb:3.7, bl:2.4, br:2.4, bezel_src:"est" },
+  { brand:"vivo", name:"X100", year:2023, screen:6.78, res:"2800×1260", ppi:452, w:75.28, h:164.05, weight:206, bt:3.4, bb:3.4, bl:2.2, br:2.2, bezel_src:"est" },
+  { brand:"vivo", name:"X100 Pro", year:2023, screen:6.78, res:"2800×1260", ppi:452, w:75.3, h:164.1, weight:221, bt:3.4, bb:3.4, bl:2.2, br:2.2, bezel_src:"est" },
+  { brand:"vivo", name:"X100 Ultra", year:2024, screen:6.78, res:"3200×1440", ppi:517, w:75.6, h:164.1, weight:229, bt:3.4, bb:3.4, bl:2.4, br:2.4, bezel_src:"est" },
+  { brand:"vivo", name:"X200", year:2024, screen:6.67, res:"2800×1260", ppi:460, w:74.81, h:160.27, weight:200, bt:2.8, bb:2.8, bl:2.6, br:2.6, bezel_src:"est" },
+  { brand:"vivo", name:"X200 Pro", year:2024, screen:6.78, res:"2800×1260", ppi:452, w:76, h:162.4, weight:223, bt:2.5, bb:2.5, bl:2.6, br:2.6, bezel_src:"est" },
+  { brand:"vivo", name:"X200 Pro mini", year:2024, screen:6.31, res:"2640×1216", ppi:462, w:71.8, h:150.8, weight:187, bt:2.8, bb:2.8, bl:2.5, br:2.5, bezel_src:"est" },
+  { brand:"vivo", name:"X200 Ultra", year:2025, screen:6.78, res:"3200×1440", ppi:517, w:76.1, h:163.5, weight:230, bt:3.1, bb:3.1, bl:2.7, br:2.7, bezel_src:"est" },
+  { brand:"vivo", name:"X300", year:2025, screen:6.31, res:"2640×1216", ppi:460, w:71.92, h:150.57, weight:190, bt:2.4, bb:2.4, bl:2.4, br:2.4, bezel_src:"est" },
+  { brand:"vivo", name:"X300 Pro", year:2025, screen:6.78, res:"2800×1260", ppi:452, w:75.5, h:162, weight:226, bt:2.3, bb:2.3, bl:2.3, br:2.3, bezel_src:"est" },
+  { brand:"honor", name:"Magic3", year:2021, screen:6.76, res:"2772×1344", ppi:456, w:74.9, h:162.8, weight:203, bt:4.2, bb:4.2, bl:0.0, br:0.0, bezel_src:"est" },
+  { brand:"honor", name:"Magic3 Pro", year:2021, screen:6.76, res:"2772×1344", ppi:456, w:74.9, h:162.8, weight:213, bt:4.2, bb:4.2, bl:0.0, br:0.0, bezel_src:"est" },
+  { brand:"honor", name:"Magic3 Pro+", year:2021, screen:6.76, res:"2772×1344", ppi:456, w:74.9, h:162.8, weight:236, bt:4.2, bb:4.2, bl:0.0, br:0.0, bezel_src:"est" },
+  { brand:"honor", name:"Magic4", year:2022, screen:6.81, res:"1224×2664", ppi:431, w:74.5, h:163.6, weight:199, bt:3.3, bb:3.3, bl:1.2, br:1.2, bezel_src:"est" },
+  { brand:"honor", name:"Magic4 Pro", year:2022, screen:6.81, res:"1312×2848", ppi:461, w:75.3, h:163.6, weight:215, bt:3.3, bb:3.3, bl:1.5, br:1.5, bezel_src:"est" },
+  { brand:"honor", name:"Magic4 至臻版", year:2022, screen:6.81, res:"1312×2848", ppi:461, w:75.3, h:163.6, weight:242, bt:3.3, bb:3.3, bl:1.5, br:1.5, bezel_src:"est" },
+  { brand:"honor", name:"Magic5", year:2023, screen:6.73, res:"2688×1224", ppi:438, w:75.5, h:161.4, weight:191, bt:2.8, bb:2.8, bl:2.3, br:2.3, bezel_src:"est" },
+  { brand:"honor", name:"Magic5 Pro", year:2023, screen:6.81, res:"2848×1312", ppi:461, w:76.7, h:162.9, weight:219, bt:3.0, bb:3.0, bl:2.2, br:2.2, bezel_src:"est" },
+  { brand:"honor", name:"Magic6", year:2024, screen:6.78, res:"1264×2800", ppi:453, w:75.4, h:161.8, weight:206, bt:2.4, bb:2.4, bl:2.3, br:2.3, bezel_src:"est" },
+  { brand:"honor", name:"Magic6 Pro", year:2024, screen:6.8, res:"2800×1280", ppi:453, w:75.8, h:162.5, weight:229, bt:2.8, bb:2.8, bl:2.0, br:2.0, bezel_src:"est" },
+  { brand:"honor", name:"Magic6 至臻版", year:2024, screen:6.8, res:"2800×1280", ppi:453, w:75.8, h:162.5, weight:233, bt:2.8, bb:2.8, bl:2.0, br:2.0, bezel_src:"est" },
+  { brand:"honor", name:"Magic6 RSR", year:2024, screen:6.8, res:"2800×1280", ppi:453, w:75.8, h:162.5, weight:237, bt:2.8, bb:2.8, bl:2.0, br:2.0, bezel_src:"est" },
+  { brand:"honor", name:"Magic7", year:2025, screen:6.78, res:"1264×2800", ppi:453, w:75.8, h:162.1, weight:199, bt:2.6, bb:2.6, bl:2.5, br:2.5, bezel_src:"est" },
+  { brand:"honor", name:"Magic7 Pro", year:2025, screen:6.8, res:"2800×1280", ppi:453, w:77.1, h:162.7, weight:223, bt:2.9, bb:2.9, bl:2.7, br:2.7, bezel_src:"est" },
+  { brand:"honor", name:"Magic7 Pro 至臻版", year:2025, screen:6.8, res:"2800×1280", ppi:453, w:77.1, h:162.7, weight:228, bt:2.9, bb:2.9, bl:2.7, br:2.7, bezel_src:"est" },
+  { brand:"google", name:"Pixel 5", year:2020, screen:6.0, res:"2340×1080", ppi:432, w:70.4, h:144.7, weight:151, bt:3.6, bb:3.6, bl:3.5, br:3.5, bezel_src:"est" },
+  { brand:"google", name:"Pixel 6", year:2021, screen:6.4, res:"2400×1080", ppi:411, w:74.8, h:158.6, weight:207, bt:5.1, bb:5.1, bl:4.0, br:4.0, bezel_src:"est" },
+  { brand:"google", name:"Pixel 6 Pro", year:2021, screen:6.7, res:"3120×1440", ppi:512, w:75.9, h:163.9, weight:210, bt:4.6, bb:4.6, bl:2.2, br:2.2, bezel_src:"est" },
+  { brand:"google", name:"Pixel 7", year:2022, screen:6.3, res:"2400×1080", ppi:416, w:73.2, h:155.6, weight:197, bt:4.5, bb:4.5, bl:3.6, br:3.6, bezel_src:"est" },
+  { brand:"google", name:"Pixel 7 Pro", year:2022, screen:6.7, res:"3120×1440", ppi:512, w:76.6, h:162.9, weight:212, bt:4.1, bb:4.1, bl:2.6, br:2.6, bezel_src:"est" },
+  { brand:"google", name:"Pixel 8", year:2023, screen:6.2, res:"2400×1080", ppi:428, w:70.8, h:150.5, weight:187, bt:4.0, bb:4.0, bl:3.4, br:3.4, bezel_src:"est" },
+  { brand:"google", name:"Pixel 8 Pro", year:2023, screen:6.7, res:"2992×1344", ppi:489, w:76.5, h:162.8, weight:213, bt:3.7, bb:3.7, bl:3.3, br:3.3, bezel_src:"est" },
+  { brand:"google", name:"Pixel 9", year:2024, screen:6.3, res:"2424×1080", ppi:422, w:72.7, h:152.8, weight:198, bt:3.5, bb:3.5, bl:3.8, br:3.8, bezel_src:"est" },
+  { brand:"google", name:"Pixel 9 Pro", year:2024, screen:6.3, res:"2856×1280", ppi:495, w:72.8, h:152.8, weight:199, bt:3.1, bb:3.1, bl:3.6, br:3.6, bezel_src:"est" },
+  { brand:"google", name:"Pixel 9 Pro XL", year:2024, screen:6.8, res:"2992×1344", ppi:486, w:76.6, h:162.8, weight:221, bt:3.2, bb:3.2, bl:3.2, br:3.2, bezel_src:"est" },
+  { brand:"xiaomi", name:"REDMI 17C", year:2026, screen:6.88, res:"1640×720", ppi:260, w:77.8, h:171.88, weight:206, bt:5.8, bb:5.8, bl:3.7, br:3.7, bezel_src:"est" },
+  { brand:"lenovo", name:"moto S50 Neo", year:2026, screen:6.6, res:null, ppi:null, w:null, h:null, weight:null, bt:null, bb:null, bl:null, br:null, bezel_src:"todo" },
+];
+
+// ---- 平板数据 ----
+const TABLETS = [
+  { brand:"apple", name:"iPad 8th gen (2020)", year:2020, screen:10.2, res:"2160×1620", ppi:264, w:174.1, h:250.6, weight:490, bt:21.4, bb:21.4, bl:9.1, br:9.1, bezel_src:"est" },
+  { brand:"apple", name:"iPad Air (2020, 4th gen)", year:2020, screen:10.9, res:"2360×1640", ppi:264, w:178.5, h:247.6, weight:458, bt:10.3, bb:10.3, bl:10.4, br:10.4, bezel_src:"est" },
+  { brand:"apple", name:"iPad Pro 11 (2020, 2nd gen)", year:2020, screen:11, res:"1668×2388", ppi:264, w:178.5, h:247.6, weight:471, bt:8.9, bb:8.9, bl:9.0, br:9.0, bezel_src:"est" },
+  { brand:"apple", name:"iPad Pro 12.9 (2020, 4th gen)", year:2020, screen:12.9, res:"2048×2732", ppi:264, w:214.9, h:280.6, weight:641, bt:8.9, bb:8.9, bl:8.9, br:8.9, bezel_src:"est" },
+  { brand:"apple", name:"iPad mini (2021, 6th gen)", year:2021, screen:8.3, res:"2266×1488", ppi:326, w:134.8, h:195.4, weight:293, bt:9.4, bb:9.4, bl:9.4, br:9.4, bezel_src:"est" },
+  { brand:"apple", name:"iPad Pro 11 (2021, 3rd gen)", year:2021, screen:11, res:"1668×2388", ppi:264, w:178.5, h:247.6, weight:466, bt:8.9, bb:8.9, bl:9.0, br:9.0, bezel_src:"est" },
+  { brand:"apple", name:"iPad Pro 12.9 (2021, 5th gen)", year:2021, screen:12.9, res:"2048×2732", ppi:264, w:214.9, h:280.6, weight:685, bt:8.9, bb:8.9, bl:8.9, br:8.9, bezel_src:"est" },
+  { brand:"apple", name:"iPad Air (2022, 5th gen M1)", year:2022, screen:10.9, res:"2360×1640", ppi:264, w:178.5, h:247.6, weight:461, bt:10.3, bb:10.3, bl:10.4, br:10.4, bezel_src:"est" },
+  { brand:"apple", name:"iPad 10th gen (2022)", year:2022, screen:10.9, res:"2360×1640", ppi:264, w:179.5, h:248.6, weight:477, bt:10.8, bb:10.8, bl:10.9, br:10.9, bezel_src:"est" },
+  { brand:"apple", name:"iPad Pro 11 (2022, 4th gen M2)", year:2022, screen:11, res:"2388×1668", ppi:264, w:178.5, h:247.6, weight:466, bt:8.9, bb:8.9, bl:9.0, br:9.0, bezel_src:"est" },
+  { brand:"apple", name:"iPad Pro 12.9 (2022, 6th gen M2)", year:2022, screen:12.9, res:"2732×2048", ppi:264, w:214.9, h:280.6, weight:682, bt:8.9, bb:8.9, bl:8.9, br:8.9, bezel_src:"est" },
+  { brand:"apple", name:"iPad mini (2024, 7th gen A17 Pro)", year:2024, screen:8.3, res:"2266×1488", ppi:326, w:134.8, h:195.4, weight:293, bt:9.4, bb:9.4, bl:9.4, br:9.4, bezel_src:"est" },
+  { brand:"apple", name:"iPad Air 11 (2024, M2)", year:2024, screen:11, res:"2360×1640", ppi:264, w:178.5, h:247.6, weight:462, bt:10.3, bb:10.3, bl:10.4, br:10.4, bezel_src:"est" },
+  { brand:"apple", name:"iPad Air 13 (2024, M2)", year:2024, screen:13, res:"2732×2048", ppi:264, w:185.4, h:280.6, weight:617, bt:null, bb:null, bl:null, br:null, bezel_src:"missing" },
+  { brand:"apple", name:"iPad Pro 11 (2024, M4)", year:2024, screen:11, res:"2420×1668", ppi:264, w:178.5, h:249.7, weight:444, bt:8.4, bb:8.4, bl:9.0, br:9.0, bezel_src:"est" },
+  { brand:"apple", name:"iPad Pro 13 (2024, M4)", year:2024, screen:13, res:"2752×2064", ppi:264, w:185.4, h:280.6, weight:579, bt:null, bb:null, bl:null, br:null, bezel_src:"missing" },
+  { brand:"apple", name:"iPad 11th gen (2025, A16)", year:2025, screen:10.9, res:"2360×1640", ppi:264, w:179.5, h:248.6, weight:481, bt:10.8, bb:10.8, bl:10.9, br:10.9, bezel_src:"est" },
+  { brand:"apple", name:"iPad Pro 11 (2025, M5)", year:2025, screen:11, res:"2420×1668", ppi:264, w:178.5, h:249.7, weight:444, bt:8.4, bb:8.4, bl:9.0, br:9.0, bezel_src:"est" },
+  { brand:"apple", name:"iPad Pro 13 (2025, M5)", year:2025, screen:13, res:"2752×2064", ppi:264, w:185.4, h:280.6, weight:579, bt:null, bb:null, bl:null, br:null, bezel_src:"missing" },
+  { brand:"samsung", name:"Galaxy Tab S7 (2020)", year:2020, screen:11, res:"2560×1600", ppi:274, w:165.3, h:253.8, weight:498, bt:8.2, bb:8.2, bl:8.5, br:8.5, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Tab S7+ (2020)", year:2020, screen:12.4, res:"2800×1752", ppi:266, w:185, h:285, weight:575, bt:8.8, bb:8.8, bl:8.9, br:8.9, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Tab S7 FE (2021)", year:2021, screen:12.4, res:"2560×1600", ppi:243, w:185, h:284.8, weight:608, bt:8.6, bb:8.6, bl:8.9, br:8.9, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Tab S8 (2022)", year:2022, screen:11, res:"2560×1600", ppi:276, w:165.3, h:253.8, weight:503, bt:9.1, bb:9.1, bl:9.0, br:9.0, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Tab S8+ (2022)", year:2022, screen:12.4, res:"2800×1752", ppi:266, w:185, h:285, weight:567, bt:8.8, bb:8.8, bl:8.9, br:8.9, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Tab S8 Ultra (2022)", year:2022, screen:14.6, res:"2960×1848", ppi:240, w:208.6, h:326.4, weight:726, bt:6.6, bb:6.6, bl:6.5, br:6.5, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Tab S9 (2023)", year:2023, screen:11, res:"2560×1600", ppi:276, w:165.8, h:254.3, weight:498, bt:9.4, bb:9.4, bl:9.3, br:9.3, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Tab S9+ (2023)", year:2023, screen:12.4, res:"2800×1752", ppi:266, w:185.4, h:285.4, weight:581, bt:9.0, bb:9.0, bl:9.1, br:9.1, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Tab S9 Ultra (2023)", year:2023, screen:14.6, res:"2960×1848", ppi:240, w:208.6, h:326.4, weight:732, bt:6.6, bb:6.6, bl:6.5, br:6.5, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Tab S9 FE (2023)", year:2023, screen:10.9, res:"2304×1440", ppi:249, w:165.8, h:254.3, weight:523, bt:9.6, bb:9.6, bl:9.5, br:9.5, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Tab S9 FE+ (2023)", year:2023, screen:12.4, res:"2560×1600", ppi:244, w:185.4, h:285.4, weight:627, bt:9.5, bb:9.5, bl:9.4, br:9.4, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Tab S10 (2024)", year:2024, screen:11, res:"2560×1600", ppi:276, w:165.8, h:254.3, weight:500, bt:9.4, bb:9.4, bl:9.3, br:9.3, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Tab S10+ (2024)", year:2024, screen:12.4, res:"2800×1752", ppi:266, w:194.7, h:326.3, weight:664, bt:29.5, bb:29.5, bl:13.7, br:13.7, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Tab S10 Ultra (2024)", year:2024, screen:14.6, res:"2960×1848", ppi:240, w:208.6, h:326.4, weight:718, bt:6.6, bb:6.6, bl:6.5, br:6.5, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Tab S10 Lite (2025)", year:2025, screen:10.9, res:"2112×1320", ppi:228, w:165.8, h:254.3, weight:524, bt:9.5, bb:9.5, bl:9.4, br:9.4, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Tab S11 (2025)", year:2025, screen:11, res:"2560×1600", ppi:276, w:165.3, h:253.8, weight:469, bt:9.1, bb:9.1, bl:9.0, br:9.0, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Tab S11+ (2025)", year:2025, screen:12.4, res:"2800×1752", ppi:266, w:194.7, h:326.3, weight:664, bt:29.5, bb:29.5, bl:13.7, br:13.7, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Tab S11 Ultra (2025)", year:2025, screen:14.6, res:"2960×1848", ppi:240, w:208.5, h:326.3, weight:692, bt:6.5, bb:6.5, bl:6.5, br:6.5, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Tab A9 (2023)", year:2023, screen:8.7, res:"1340×800", ppi:179, w:124.7, h:211, weight:332, bt:10.4, bb:10.4, bl:5.6, br:5.6, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Tab A9+ (2023)", year:2023, screen:11, res:"1920×1200", ppi:206, w:168.7, h:257.1, weight:480, bt:10.2, bb:10.2, bl:10.4, br:10.4, bezel_src:"est" },
+  { brand:"huawei", name:"MatePad 10.8 (2020)", year:2020, screen:10.8, res:"2560×1600", ppi:280, w:177.3, h:261, weight:510, bt:14.4, bb:14.4, bl:16.1, br:16.1, bezel_src:"est" },
+  { brand:"huawei", name:"MatePad 11 (2021)", year:2021, screen:10.95, res:"2560×1600", ppi:275, w:165.3, h:253.8, weight:485, bt:8.7, bb:8.7, bl:8.8, br:8.8, bezel_src:"est" },
+  { brand:"huawei", name:"MatePad Pro 12.6 (2021)", year:2021, screen:12.6, res:"2560×1600", ppi:240, w:184.7, h:286.5, weight:609, bt:7.8, bb:7.8, bl:7.7, br:7.7, bezel_src:"est" },
+  { brand:"huawei", name:"MatePad 10.4 (2022)", year:2022, screen:10.4, res:"2000×1200", ppi:225, w:177.3, h:261, weight:510, bt:17.6, bb:17.6, bl:20.9, br:20.9, bezel_src:"est" },
+  { brand:"huawei", name:"MatePad Pro 11 (2022)", year:2022, screen:11, res:"2560×1600", ppi:274, w:160.4, h:249.2, weight:449, bt:5.9, bb:5.9, bl:6.0, br:6.0, bezel_src:"est" },
+  { brand:"huawei", name:"MatePad Pro 12.6 (2022)", year:2022, screen:12.6, res:"2560×1600", ppi:240, w:184.7, h:286.5, weight:609, bt:7.8, bb:7.8, bl:7.7, br:7.7, bezel_src:"est" },
+  { brand:"huawei", name:"MatePad 11 2023", year:2023, screen:11, res:"2560×1600", ppi:275, w:165.3, h:253.8, weight:485, bt:8.7, bb:8.7, bl:8.8, br:8.8, bezel_src:"est" },
+  { brand:"huawei", name:"MatePad Pro 13.2 (2023)", year:2023, screen:13.2, res:"2880×1920", ppi:262, w:196.1, h:289.1, weight:580, bt:4.9, bb:4.9, bl:5.0, br:5.0, bezel_src:"est" },
+  { brand:"huawei", name:"MatePad 11.5S (2024)", year:2024, screen:11.5, res:"2200×1440", ppi:213, w:176.8, h:267.3, weight:499, bt:2.5, bb:2.5, bl:2.5, br:2.5, bezel_src:"est" },
+  { brand:"huawei", name:"MatePad Pro 11 (2024)", year:2024, screen:11, res:"2560×1600", ppi:274, w:160.4, h:249.2, weight:449, bt:5.9, bb:5.9, bl:6.0, br:6.0, bezel_src:"est" },
+  { brand:"huawei", name:"MatePad Pro 13.2 (2025)", year:2025, screen:13.2, res:"2880×1920", ppi:262, w:196.1, h:289.1, weight:580, bt:4.9, bb:4.9, bl:5.0, br:5.0, bezel_src:"est" },
+  { brand:"huawei", name:"MatePad Pro 11 (2025)", year:2025, screen:11, res:"2560×1600", ppi:274, w:160.4, h:249.2, weight:449, bt:5.9, bb:5.9, bl:6.0, br:6.0, bezel_src:"est" },
+  { brand:"xiaomi", name:"Xiaomi Pad 5 (2021)", year:2021, screen:11, res:"2560×1600", ppi:275, w:166.25, h:254.69, weight:511, bt:9.1, bb:9.1, bl:9.2, br:9.2, bezel_src:"est" },
+  { brand:"xiaomi", name:"Xiaomi Pad 5 Pro (2021)", year:2021, screen:11, res:"2560×1600", ppi:274, w:166.25, h:254.69, weight:515, bt:8.7, bb:8.7, bl:9.0, br:9.0, bezel_src:"est" },
+  { brand:"xiaomi", name:"Redmi Pad (2022)", year:2022, screen:10.61, res:"2000×1200", ppi:220, w:158.1, h:250.5, weight:465, bt:9.8, bb:9.8, bl:9.8, br:9.8, bezel_src:"est" },
+  { brand:"xiaomi", name:"Xiaomi Pad 6 (2023)", year:2023, screen:11, res:"2880×1800", ppi:309, w:165.18, h:253.95, weight:490, bt:8.6, bb:8.6, bl:8.6, br:8.6, bezel_src:"est" },
+  { brand:"xiaomi", name:"Xiaomi Pad 6 Pro (2023)", year:2023, screen:11, res:"2880×1800", ppi:309, w:165.18, h:253.95, weight:490, bt:8.6, bb:8.6, bl:8.6, br:8.6, bezel_src:"est" },
+  { brand:"xiaomi", name:"Redmi Pad SE (2023)", year:2023, screen:11, res:"1920×1200", ppi:207, w:167.08, h:255.53, weight:478, bt:10.0, bb:10.0, bl:9.9, br:9.9, bezel_src:"est" },
+  { brand:"xiaomi", name:"Redmi Pad SE 8.7 (2024)", year:2024, screen:8.7, res:"1340×800", ppi:179, w:122.4, h:210.7, weight:373, bt:10.3, bb:10.3, bl:4.4, br:4.4, bezel_src:"est" },
+  { brand:"xiaomi", name:"Xiaomi Pad 7 (2024)", year:2024, screen:11.2, res:"3200×2136", ppi:345, w:173.42, h:251.22, weight:500, bt:7.8, bb:7.8, bl:8.1, br:8.1, bezel_src:"est" },
+  { brand:"xiaomi", name:"Xiaomi Pad 6S Pro (2024)", year:2024, screen:12.4, res:"3048×2032", ppi:303, w:176.4, h:275.5, weight:586, bt:10.0, bb:10.0, bl:3.0, br:3.0, bezel_src:"est" },
+  { brand:"xiaomi", name:"Xiaomi Pad 7 Pro (2025)", year:2025, screen:11.2, res:"3200×2136", ppi:345, w:173.42, h:251.22, weight:500, bt:7.8, bb:7.8, bl:8.1, br:8.1, bezel_src:"est" },
+  { brand:"oppo", name:"OPPO Pad (2022)", year:2022, screen:11, res:"2560×1600", ppi:275, w:163.8, h:252.2, weight:507, bt:7.9, bb:7.9, bl:8.0, br:8.0, bezel_src:"est" },
+  { brand:"oppo", name:"OPPO Pad Air (2022)", year:2022, screen:10.36, res:"2000×1200", ppi:225, w:154.84, h:245.08, weight:440, bt:9.7, bb:9.7, bl:9.7, br:9.7, bezel_src:"est" },
+  { brand:"oppo", name:"OPPO Pad 2 (2023)", year:2023, screen:11.61, res:"2800×2000", ppi:296, w:189.3, h:258.1, weight:552, bt:8.9, bb:8.9, bl:8.8, br:8.8, bezel_src:"est" },
+  { brand:"oppo", name:"OPPO Pad 3 (2025)", year:2025, screen:11.6, res:"2800×2000", ppi:296, w:189.11, h:257.75, weight:533, bt:8.7, bb:8.7, bl:8.7, br:8.7, bezel_src:"est" },
+  { brand:"oppo", name:"OPPO Pad 3 Pro (2025)", year:2025, screen:12.1, res:"3000×2120", ppi:303, w:195.06, h:268.66, weight:586, bt:8.6, bb:8.6, bl:8.7, br:8.7, bezel_src:"est" },
+  { brand:"vivo", name:"vivo Pad (2022)", year:2022, screen:11, res:"2560×1600", ppi:276, w:164.71, h:253.15, weight:489, bt:8.8, bb:8.8, bl:8.7, br:8.7, bezel_src:"est" },
+  { brand:"vivo", name:"vivo Pad 2 (2023)", year:2023, screen:12.1, res:"2800×1968", ppi:287, w:191.6, h:266.03, weight:585, bt:9.1, bb:9.1, bl:8.7, br:8.7, bezel_src:"est" },
+  { brand:"vivo", name:"vivo Pad 3 (2024)", year:2024, screen:12.1, res:"2800×1968", ppi:289, w:192, h:266.43, weight:589, bt:10.2, bb:10.2, bl:9.5, br:9.5, bezel_src:"est" },
+  { brand:"vivo", name:"vivo Pad 3 Pro (2024)", year:2024, screen:13, res:"3096×2064", ppi:292, w:198.32, h:289.56, weight:679, bt:10.1, bb:10.1, bl:9.4, br:9.4, bezel_src:"est" },
+  { brand:"honor", name:"Honor Pad V7 (2021)", year:2021, screen:10.4, res:"2000×1200", ppi:225, w:154.96, h:245.2, weight:480, bt:9.7, bb:9.7, bl:9.7, br:9.7, bezel_src:"est" },
+  { brand:"honor", name:"Honor Pad V7 Pro (2021)", year:2021, screen:11, res:"2560×1600", ppi:276, w:168.9, h:252.1, weight:485, bt:8.3, bb:8.3, bl:10.8, br:10.8, bezel_src:"est" },
+  { brand:"honor", name:"Honor Pad 8 (2022)", year:2022, screen:12, res:"2000×1200", ppi:186, w:189.8, h:277, weight:520, bt:1.9, bb:1.9, bl:13.0, br:13.0, bezel_src:"est" },
+  { brand:"honor", name:"Honor Pad V8 (2023)", year:2023, screen:11, res:"2560×1600", ppi:276, w:163.64, h:252.1, weight:485, bt:8.3, bb:8.3, bl:8.2, br:8.2, bezel_src:"est" },
+  { brand:"honor", name:"Honor Pad V8 Pro (2023)", year:2023, screen:12.1, res:"2560×1600", ppi:249, w:185.4, h:280.5, weight:585, bt:9.7, bb:9.7, bl:11.1, br:11.1, bezel_src:"est" },
+  { brand:"honor", name:"Honor Pad 9 (2023)", year:2023, screen:12.1, res:"2560×1600", ppi:249, w:185.4, h:280.5, weight:555, bt:9.7, bb:9.7, bl:11.1, br:11.1, bezel_src:"est" },
+  { brand:"honor", name:"Honor MagicPad 13 (2023)", year:2023, screen:13, res:"2880×1840", ppi:263, w:191.1, h:291.7, weight:660, bt:6.8, bb:6.8, bl:6.7, br:6.7, bezel_src:"est" },
+  { brand:"honor", name:"Honor Pad 9 Pro (2024)", year:2024, screen:12.1, res:"2560×1600", ppi:249, w:178.95, h:277, weight:589, bt:7.9, bb:7.9, bl:7.9, br:7.9, bezel_src:"est" },
+  { brand:"honor", name:"Honor MagicPad 2 (2024)", year:2024, screen:12.3, res:"3000×1920", ppi:290, w:180.5, h:274.5, weight:555, bt:5.9, bb:5.9, bl:6.2, br:6.2, bezel_src:"est" },
+  { brand:"lenovo", name:"Legion Tab Y900 (2023)", year:2023, screen:14.5, res:"3000×1876", ppi:240, w:210.3, h:326, weight:740, bt:4.2, bb:4.2, bl:5.9, br:5.9, bezel_src:"est" },
+  { brand:"lenovo", name:"Xiaoxin Pad Pro 12.7 (2023)", year:2023, screen:12.7, res:"2944×1840", ppi:272, w:188, h:289, weight:615, bt:7.0, bb:7.0, bl:8.1, br:8.1, bezel_src:"est" },
+  { brand:"lenovo", name:"Xiaoxin Pad Pro 12.7 (2024)", year:2024, screen:12.7, res:"2944×1840", ppi:272, w:188, h:289, weight:615, bt:7.0, bb:7.0, bl:8.1, br:8.1, bezel_src:"est" },
+  { brand:"lenovo", name:"Tab P12 Pro (2022)", year:2022, screen:12.6, res:"2560×1600", ppi:240, w:185.6, h:287.6, weight:565, bt:8.3, bb:8.3, bl:8.1, br:8.1, bezel_src:"est" },
+];
+
+// ---- 折叠屏数据 ----
+const FOLDABLES = [
+  { brand:"samsung", name:"Galaxy Fold (W20 5G)", year:2019, type:"h", screen:7.3, res:"2152×1536", ppi:362, w:117.9, h:160.9, weight:278, bt:5.0, bb:5.0, bl:5.1, br:5.1, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Z Fold2 5G", year:2020, type:"h", screen:7.6, res:"2208×1768", ppi:373, w:128.2, h:159.2, weight:282, bt:4.4, bb:4.4, bl:3.9, br:3.9, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Z Fold3 5G", year:2021, type:"h", screen:7.6, res:"2208×1768", ppi:374, w:128.1, h:158.2, weight:271, bt:4.1, bb:4.1, bl:4.0, br:4.0, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Z Fold4", year:2022, type:"h", screen:7.6, res:"2176×1812", ppi:374, w:130.1, h:155.1, weight:263, bt:3.7, bb:3.7, bl:3.5, br:3.5, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Z Fold5", year:2023, type:"h", screen:7.6, res:"2176×1812", ppi:374, w:129.9, h:154.9, weight:253, bt:3.6, bb:3.6, bl:3.4, br:3.4, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Z Fold6", year:2024, type:"h", screen:7.6, res:"2160×1856", ppi:374, w:132.6, h:153.5, weight:239, bt:3.4, bb:3.4, bl:3.3, br:3.3, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Z Fold7", year:2025, type:"h", screen:8.0, res:"2184×1968", ppi:368, w:143.2, h:158.4, weight:215, bt:3.8, bb:3.8, bl:3.7, br:3.7, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Z Fold Special Edition", year:2024, type:"h", screen:7.6, res:"2160×1856", ppi:374, w:132.6, h:153.5, weight:236, bt:3.4, bb:3.4, bl:3.3, br:3.3, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Z TriFold", year:2025, type:"t", screen:10.0, res:"2160×1584", ppi:269, w:214.1, h:159.2, weight:309, bt:5.1, bb:5.1, bl:4.8, br:4.8, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Z Flip", year:2020, type:"v", screen:6.7, res:"2636×1080", ppi:425, w:73.6, h:167.3, weight:183, bt:4.9, bb:4.9, bl:4.5, br:4.5, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Z Flip3 5G", year:2021, type:"v", screen:6.7, res:"2640×1080", ppi:425, w:72.2, h:166, weight:183, bt:4.1, bb:4.1, bl:3.8, br:3.8, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Z Flip4", year:2022, type:"v", screen:6.7, res:"2640×1080", ppi:425, w:71.9, h:165.1, weight:187, bt:3.7, bb:3.7, bl:3.7, br:3.7, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Z Flip5", year:2023, type:"v", screen:6.7, res:"2640×1080", ppi:425, w:71.9, h:165.1, weight:187, bt:3.7, bb:3.7, bl:3.7, br:3.7, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Z Flip6", year:2024, type:"v", screen:6.7, res:"2640×1080", ppi:425, w:71.9, h:165.1, weight:187, bt:3.7, bb:3.7, bl:3.7, br:3.7, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Z Flip7", year:2025, type:"v", screen:6.9, res:"2520×1080", ppi:413, w:75.2, h:166.7, weight:188, bt:5.9, bb:5.9, bl:4.4, br:4.4, bezel_src:"est" },
+  { brand:"huawei", name:"Mate X", year:2019, type:"h", screen:8.0, res:"2480×2200", ppi:414, w:146.2, h:161.3, weight:300, bt:4.6, bb:4.6, bl:5.6, br:5.6, bezel_src:"est" },
+  { brand:"huawei", name:"Mate Xs", year:2020, type:"h", screen:8.0, res:"2480×2200", ppi:414, w:146.2, h:161.3, weight:300, bt:4.6, bb:4.6, bl:5.6, br:5.6, bezel_src:"est" },
+  { brand:"huawei", name:"Mate X2", year:2021, type:"h", screen:8.0, res:"2480×2200", ppi:413, w:145.8, h:161.8, weight:295, bt:4.6, bb:4.6, bl:5.2, br:5.2, bezel_src:"est" },
+  { brand:"huawei", name:"Mate Xs 2", year:2022, type:"h", screen:7.8, res:"2480×2200", ppi:424, w:139.3, h:156.5, weight:255, bt:4.0, bb:4.0, bl:3.8, br:3.8, bezel_src:"est" },
+  { brand:"huawei", name:"Mate X3", year:2023, type:"h", screen:7.85, res:"2496×2224", ppi:426, w:139.6, h:156.5, weight:239, bt:3.8, bb:3.8, bl:3.5, br:3.5, bezel_src:"est" },
+  { brand:"huawei", name:"Mate X5", year:2024, type:"h", screen:7.85, res:"2496×2224", ppi:426, w:139.6, h:156.5, weight:241, bt:3.8, bb:3.8, bl:3.5, br:3.5, bezel_src:"est" },
+  { brand:"huawei", name:"Mate X6", year:2024, type:"h", screen:7.93, res:"2440×2240", ppi:417, w:139.6, h:156.5, weight:241, bt:3.9, bb:3.9, bl:1.6, br:1.6, bezel_src:"est" },
+  { brand:"huawei", name:"Mate X7", year:2025, type:"h", screen:8.0, res:"2416×2210", ppi:412, w:139.8, h:156.8, weight:235, bt:3.9, bb:3.9, bl:1.8, br:1.8, bezel_src:"est" },
+  { brand:"huawei", name:"Mate XT (三折叠)", year:2024, type:"t", screen:10.2, res:"2232×3184", ppi:352, w:156.7, h:143.2, weight:306, bt:null, bb:null, bl:null, br:null, bezel_src:"missing" },
+  { brand:"huawei", name:"Pocket", year:2022, type:"v", screen:6.9, res:"2790×1136", ppi:442, w:75.5, h:170, weight:190, bt:4.8, bb:4.8, bl:5.1, br:5.1, bezel_src:"est" },
+  { brand:"huawei", name:"Pocket 2", year:2024, type:"v", screen:6.94, res:"2690×1136", ppi:420, w:75.5, h:170, weight:199, bt:3.7, bb:3.7, bl:3.4, br:3.4, bezel_src:"est" },
+  { brand:"huawei", name:"nova Flip", year:2024, type:"v", screen:6.94, res:"2690×1136", ppi:420, w:75.4, h:169.8, weight:195, bt:3.6, bb:3.6, bl:3.3, br:3.3, bezel_src:"est" },
+  { brand:"huawei", name:"Pura X (阔折叠)", year:2025, type:"w", screen:6.3, res:"2120×1320", ppi:414, w:91.7, h:143.2, weight:195, bt:6.6, bb:6.6, bl:5.4, br:5.4, bezel_src:"est" },
+  { brand:"huawei", name:"Pura X Max (阔折叠)", year:2026, type:"w", screen:7.7, res:"2584×1828", ppi:356, w:166.5, h:120, weight:229, bt:null, bb:null, bl:null, br:null, bezel_src:"missing" },
+  { brand:"huawei", name:"nova Flip S", year:2026, type:"v", screen:6.94, res:"2690×1136", ppi:420, w:75.4, h:169.8, weight:195, bt:3.6, bb:3.6, bl:3.3, br:3.3, bezel_src:"est" },
+  { brand:"xiaomi", name:"MIX Fold", year:2021, type:"h", screen:8.01, res:"2480×1860", ppi:360, w:133.4, h:173.3, weight:317, bt:null, bb:null, bl:null, br:null, bezel_src:"missing" },
+  { brand:"xiaomi", name:"MIX Fold 2", year:2022, type:"h", screen:8.02, res:"2160×1914", ppi:360, w:144.7, h:161.6, weight:262, bt:4.6, bb:4.6, bl:4.8, br:4.8, bezel_src:"est" },
+  { brand:"xiaomi", name:"MIX Fold 3", year:2023, type:"h", screen:8.03, res:"2160×1916", ppi:360, w:143.3, h:161.2, weight:259, bt:4.4, bb:4.4, bl:4.1, br:4.1, bezel_src:"est" },
+  { brand:"xiaomi", name:"MIX Fold 4", year:2024, type:"h", screen:8.03, res:"2160×1916", ppi:360, w:143.3, h:161.2, weight:226, bt:4.4, bb:4.4, bl:4.1, br:4.1, bezel_src:"est" },
+  { brand:"xiaomi", name:"MIX Flip", year:2024, type:"v", screen:6.86, res:"2912×1224", ppi:460, w:74, h:167.5, weight:192, bt:3.4, bb:3.4, bl:3.2, br:3.2, bezel_src:"est" },
+  { brand:"xiaomi", name:"MIX Flip 2", year:2025, type:"v", screen:6.86, res:"2912×1224", ppi:460, w:74, h:167.5, weight:190, bt:3.4, bb:3.4, bl:3.2, br:3.2, bezel_src:"est" },
+  { brand:"oppo", name:"Find N", year:2021, type:"h", screen:7.1, res:"1792×1920", ppi:370, w:140.2, h:132.6, weight:275, bt:4.2, bb:4.2, bl:4.8, br:4.8, bezel_src:"est" },
+  { brand:"oppo", name:"Find N2", year:2022, type:"h", screen:7.1, res:"1792×1920", ppi:370, w:140.5, h:132.2, weight:233, bt:4.3, bb:4.3, bl:4.6, br:4.6, bezel_src:"est" },
+  { brand:"oppo", name:"Find N3", year:2023, type:"h", screen:7.82, res:"2440×2268", ppi:426, w:143.1, h:153.4, weight:245, bt:4.0, bb:4.0, bl:3.9, br:3.9, bezel_src:"est" },
+  { brand:"oppo", name:"Find N5", year:2025, type:"h", screen:8.12, res:"2480×2248", ppi:412, w:146.6, h:160.9, weight:229, bt:4.0, bb:4.0, bl:4.0, br:4.0, bezel_src:"est" },
+  { brand:"oppo", name:"Find N6", year:2026, type:"h", screen:8.12, res:"2248×2480", ppi:412, w:145.6, h:159.9, weight:225, bt:3.5, bb:3.5, bl:3.5, br:3.5, bezel_src:"est" },
+  { brand:"oppo", name:"Find N2 Flip", year:2023, type:"v", screen:6.8, res:"2520×1080", ppi:403, w:75.2, h:166.2, weight:191, bt:3.7, bb:3.7, bl:3.6, br:3.6, bezel_src:"est" },
+  { brand:"oppo", name:"Find N3 Flip", year:2023, type:"v", screen:6.8, res:"2520×1080", ppi:403, w:75.8, h:166.4, weight:198, bt:3.8, bb:3.8, bl:3.9, br:3.9, bezel_src:"est" },
+  { brand:"vivo", name:"X Fold", year:2022, type:"h", screen:8.03, res:"2160×1916", ppi:360, w:143.7, h:161.3, weight:311, bt:4.5, bb:4.5, bl:4.3, br:4.3, bezel_src:"est" },
+  { brand:"vivo", name:"X Fold2", year:2023, type:"h", screen:8.03, res:"2160×1916", ppi:360, w:143.4, h:161.3, weight:279, bt:4.5, bb:4.5, bl:4.1, br:4.1, bezel_src:"est" },
+  { brand:"vivo", name:"X Fold3", year:2024, type:"h", screen:8.03, res:"2480×2200", ppi:413, w:142.7, h:160, weight:219, bt:3.7, bb:3.7, bl:3.7, br:3.7, bezel_src:"est" },
+  { brand:"vivo", name:"X Fold3 Pro", year:2024, type:"h", screen:8.03, res:"2480×2200", ppi:412, w:142.4, h:160, weight:236, bt:3.6, bb:3.6, bl:3.4, br:3.4, bezel_src:"est" },
+  { brand:"vivo", name:"X Fold5", year:2025, type:"h", screen:8.03, res:"2480×2200", ppi:413, w:142.7, h:160, weight:217, bt:3.7, bb:3.7, bl:3.7, br:3.7, bezel_src:"est" },
+  { brand:"honor", name:"Magic V", year:2022, type:"h", screen:7.9, res:"2272×1984", ppi:401, w:140.5, h:160, weight:293, bt:8.0, bb:8.0, bl:7.4, br:7.4, bezel_src:"est" },
+  { brand:"honor", name:"Magic V2", year:2023, type:"h", screen:7.92, res:"2344×2156", ppi:402, w:145.3, h:156.6, weight:237, bt:4.2, bb:4.2, bl:4.5, br:4.5, bezel_src:"est" },
+  { brand:"honor", name:"Magic V3", year:2024, type:"h", screen:7.92, res:"2344×2156", ppi:402, w:145.3, h:156.6, weight:226, bt:4.2, bb:4.2, bl:4.5, br:4.5, bezel_src:"est" },
+  { brand:"honor", name:"Magic V5", year:2025, type:"h", screen:7.95, res:"2352×2172", ppi:403, w:145.9, h:156.8, weight:217, bt:4.3, bb:4.3, bl:4.5, br:4.5, bezel_src:"est" },
+  { brand:"honor", name:"Magic V6", year:2026, type:"h", screen:7.95, res:"2172×2352", ppi:403, w:145.9, h:156.8, weight:224, bt:4.3, bb:4.3, bl:4.5, br:4.5, bezel_src:"est" },
+  { brand:"honor", name:"Magic V Flip", year:2024, type:"v", screen:6.8, res:"2520×1080", ppi:403, w:75, h:166.5, weight:195, bt:3.8, bb:3.8, bl:3.5, br:3.5, bezel_src:"est" },
+  { brand:"honor", name:"Magic V Flip 2", year:2025, type:"v", screen:6.82, res:"2868×1232", ppi:458, w:75.6, h:167.1, weight:204, bt:4.0, bb:4.0, bl:3.6, br:3.6, bezel_src:"est" },
+  { brand:"motorola", name:"Razr 40", year:2023, type:"v", screen:6.9, res:"2640×1080", ppi:413, w:74, h:170.8, weight:189, bt:4.2, bb:4.2, bl:3.8, br:3.8, bezel_src:"est" },
+  { brand:"motorola", name:"Razr 40 Ultra", year:2023, type:"v", screen:6.9, res:"2640×1080", ppi:413, w:74, h:170, weight:189, bt:3.8, bb:3.8, bl:3.8, br:3.8, bezel_src:"est" },
+  { brand:"motorola", name:"Razr 50", year:2024, type:"v", screen:6.9, res:"2640×1080", ppi:413, w:74, h:171.3, weight:188, bt:4.5, bb:4.5, bl:3.8, br:3.8, bezel_src:"est" },
+  { brand:"motorola", name:"Razr 50 Ultra", year:2024, type:"v", screen:6.9, res:"2640×1080", ppi:413, w:72, h:171.5, weight:189, bt:4.6, bb:4.6, bl:2.8, br:2.8, bezel_src:"est" },
+  { brand:"motorola", name:"Razr 60", year:2025, type:"v", screen:6.9, res:"2640×1080", ppi:413, w:74, h:171.3, weight:188, bt:4.5, bb:4.5, bl:3.8, br:3.8, bezel_src:"est" },
+  { brand:"motorola", name:"Razr 60 Ultra", year:2025, type:"v", screen:7.0, res:"2912×1224", ppi:413, w:72, h:171.5, weight:199, bt:null, bb:null, bl:null, br:null, bezel_src:"missing" },
+  { brand:"motorola", name:"Razr Fold", year:2026, type:"h", screen:8.1, res:"2232×2484", ppi:410, w:146, h:161, weight:243, bt:3.6, bb:3.6, bl:3.9, br:3.9, bezel_src:"est" },
+  { brand:"google", name:"Pixel Fold", year:2023, type:"h", screen:7.6, res:"2208×1840", ppi:378, w:139.7, h:158.7, weight:283, bt:5.2, bb:5.2, bl:8.0, br:8.0, bezel_src:"est" },
+  { brand:"google", name:"Pixel 9 Pro Fold", year:2024, type:"h", screen:8.0, res:"2076×2152", ppi:373, w:150.2, h:155.2, weight:257, bt:4.3, bb:4.3, bl:4.4, br:4.4, bezel_src:"est" },
+  { brand:"vivo", name:"X Fold6", year:2026, type:"h", screen:8.02, res:null, ppi:null, w:null, h:null, weight:217, bt:null, bb:null, bl:null, br:null, bezel_src:"todo" },
+];
+
+// ==================== BRAND CONFIG ====================
+
+const ALL_BRANDS = [
+  { key:"apple", name:"苹果 Apple", color:"var(--accent-apple)" },
+  { key:"huawei", name:"华为 Huawei", color:"var(--accent-huawei)" },
+  { key:"samsung", name:"三星 Samsung", color:"var(--accent-samsung)" },
+  { key:"xiaomi", name:"小米 Xiaomi", color:"var(--accent-xiaomi)" },
+  { key:"oppo", name:"OPPO", color:"var(--accent-oppo)" },
+  { key:"vivo", name:"vivo", color:"var(--accent-vivo)" },
+  { key:"honor", name:"荣耀 Honor", color:"var(--accent-honor)" },
+  { key:"motorola", name:"摩托罗拉 Motorola", color:"var(--accent-motorola)" },
+  { key:"google", name:"Google", color:"var(--accent-google)" },
+  { key:"lenovo", name:"联想 Lenovo", color:"var(--accent-lenovo)" },
+];
+
+const TYPE_MAP = { h:"横折叠", v:"竖折叠", t:"三折叠", w:"阔折叠" };
+const TYPE_CLASS = { h:"type-h", v:"type-v", t:"type-t", w:"type-w" };
+const SRC_MAP = { est:"估算", measured:"实测", missing:"缺失", todo:"待补" };
+
+// ==================== UTILITIES ====================
+
+function fmt(v) { return v != null ? v : "—"; }
+
+function weightClass(w, cat) {
+  if (w == null) return "";
+  if (cat === "phone") {
+    if (w < 175) return "weight-light";
+    if (w > 220) return "weight-heavy";
+  } else if (cat === "tablet") {
+    if (w < 500) return "weight-light";
+    if (w > 650) return "weight-heavy";
+  } else {
+    if (w < 200) return "weight-light";
+    if (w > 270) return "weight-heavy";
+  }
+  return "";
+}
+
+function getBrandsForData(data) {
+  const keys = [...new Set(data.map(d => d.brand))];
+  return ALL_BRANDS.filter(b => keys.includes(b.key));
+}
+
+// ==================== STATE ====================
+
+let currentCat = "phone";
+let currentFilter = "all";
+let searchKw = "";
+let minSize = null;
+let maxSize = null;
+let minW = null;
+let maxW = null;
+let minH = null;
+let maxH = null;
+
+// ==================== INSIGHT RENDERING ====================
+
+function renderInsight() {
+  if (currentCat === "phone") return renderPhoneInsight();
+  if (currentCat === "tablet") return renderTabletInsight();
+  return renderFoldableInsight();
+}
+
+function renderPhoneInsight() {
+  return `<div class="insight-section">
+    <h2><span class="insight-icon">🔍</span> 手机品类盘点与洞察</h2>
+    <div class="insight-grid">
+      <div class="insight-card">
+        <h3><span class="insight-tag tag-size-xs">迷你型</span> ≤5.5"</h3>
+        <p>代表机型：iPhone 12 mini / 13 mini（5.4"）、iPhone SE（4.7"）<br>
+        <strong>定位</strong>：单手操控极致便携<br>
+        <strong>人群</strong>：小屏爱好者、手小的用户、备用机需求<br>
+        <strong>趋势</strong>：苹果自 2022 年起不再更新 mini 系列，市场证明小屏需求有限，已基本退出旗舰阵营</p>
+      </div>
+      <div class="insight-card">
+        <h3><span class="insight-tag tag-size-s">标准型</span> 5.6"–6.3"</h3>
+        <p>代表机型：iPhone 16/17（6.1"–6.3"）、Galaxy S25（6.2"）、小米15（6.36"）<br>
+        <strong>定位</strong>：主力旗舰，单手可握的最佳平衡<br>
+        <strong>人群</strong>：大多数消费者，兼顾便携与显示<br>
+        <strong>趋势</strong>：基础款屏幕从 6.1" 逐步增大至 6.3"，Pro 款也进入此区间（如 iPhone 16 Pro 6.3"）</p>
+      </div>
+      <div class="insight-card">
+        <h3><span class="insight-tag tag-size-m">大屏型</span> 6.4"–6.8"</h3>
+        <p>代表机型：iPhone 16 Plus（6.7"）、Galaxy S25+（6.7"）、华为 Pura 80 Pro（6.8"）<br>
+        <strong>定位</strong>：大屏体验与 Pro 级影像兼顾<br>
+        <strong>人群</strong>：影音爱好者、长续航需求、中重度手机用户<br>
+        <strong>趋势</strong>：Plus 机型成为安卓阵营的标准大屏选项，分辨率从 FHD 向 QHD 升级</p>
+      </div>
+      <div class="insight-card">
+        <h3><span class="insight-tag tag-size-l">超大屏型</span> 6.8"–6.9"</h3>
+        <p>代表机型：iPhone 17 Pro Max（6.9"）、Galaxy S25 Ultra（6.9"）、小米15 Ultra（6.73"）<br>
+        <strong>定位</strong>：顶级旗舰，全能影像与性能<br>
+        <strong>人群</strong>：影像发烧友、商务旗舰用户、重度内容创作者<br>
+        <strong>趋势</strong>：Ultra/Pro Max 屏幕持续微增（6.7"→6.9"），重量控制成为新挑战</p>
+      </div>
+    </div>
+    <div class="insight-summary">
+      <strong>核心洞察：</strong>手机屏幕尺寸已进入「存量优化」阶段，6.1"–6.3" 和 6.7"–6.9" 两大档位高度固化。2024–2025 年的新变化是<strong>超薄机型</strong>的出现（iPhone 17 Air 5.64mm / Galaxy S25 Edge 5.8mm），在保持大屏的同时追求极致轻薄，开辟了「大屏薄型」新细分。折叠屏的普及也在倒逼直板手机在重量上做减法——6.9" 手机已从 240g 降至 218g（S25 Ultra）。
+    </div>
+  </div>`;
+}
+
+function renderTabletInsight() {
+  return `<div class="insight-section">
+    <h2><span class="insight-icon">🔍</span> 平板品类盘点与洞察</h2>
+    <div class="insight-grid">
+      <div class="insight-card">
+        <h3><span class="insight-tag tag-size-xs">迷你平板</span> 8"–9"</h3>
+        <p>代表机型：iPad mini 6th/7th（8.3"）、Galaxy Tab A9（8.7"）、Redmi Pad SE 8.7（8.7"）<br>
+        <strong>定位</strong>：便携阅读与轻娱乐<br>
+        <strong>人群</strong>：通勤阅读者、儿童学习、游戏副屏<br>
+        <strong>特点</strong>：326ppi 高密度（iPad mini）、单手可持，是最接近「大号手机」体验的平板</p>
+      </div>
+      <div class="insight-card">
+        <h3><span class="insight-tag tag-size-s">标准平板</span> 10"–11"</h3>
+        <p>代表机型：iPad 10th/11th（10.9"）、iPad Air 11（11"）、Galaxy Tab S9/S10/S11（11"）、Xiaomi Pad 5/6/7（11"）<br>
+        <strong>定位</strong>：通用娱乐与轻办公<br>
+        <strong>人群</strong>：学生、家庭用户、轻办公人群<br>
+        <strong>特点</strong>：最主流的平板尺寸段，品牌覆盖最广；11" 已成为安卓平板的「黄金尺寸」，分辨率向 2.8K–3K 进化</p>
+      </div>
+      <div class="insight-card">
+        <h3><span class="insight-tag tag-size-m">大屏平板</span> 12"–13"</h3>
+        <p>代表机型：iPad Pro 12.9/13（12.9"–13"）、Galaxy Tab S9+/S10+（12.4"）、MatePad Pro 13.2（13.2"）、vivo Pad 3 Pro（13"）<br>
+        <strong>定位</strong>：专业创作与生产力<br>
+        <strong>人群</strong>：设计师、插画师、文档处理重度用户<br>
+        <strong>特点</strong>：替代笔记本的潜力，支持键盘和触控笔；重量 550–680g，便携性有所牺牲</p>
+      </div>
+      <div class="insight-card">
+        <h3><span class="insight-tag tag-size-xl">超大屏平板</span> 14"+</h3>
+        <p>代表机型：Galaxy Tab S8/S9/S10/S11 Ultra（14.6"）、Legion Tab Y900（14.5"）<br>
+        <strong>定位</strong>：桌面级生产力与沉浸娱乐<br>
+        <strong>人群</strong>：多任务重度用户、影视发烧友、DeX/桌面模式用户<br>
+        <strong>特点</strong>：14.6" 已接近笔记本屏幕，700g+ 重量基本告别移动手持；三星 Ultra 系列独占此细分</p>
+      </div>
+    </div>
+    <div class="insight-summary">
+      <strong>核心洞察：</strong>平板市场呈现「两极分化 + 中间带扩展」格局。<strong>8.3" 迷你平板</strong>长期由 iPad mini 垄断，安卓阵营鲜有跟进；<strong>11" 标准平板</strong>是竞争最激烈的价位段，安卓品牌密集布局；<strong>13" 大屏平板</strong>正在快速替代 12" 成为主流 Pro 级尺寸；<strong>14.6" 超大屏</strong>则是三星的独门赛道，其他品牌尚未跟进。总体趋势：屏幕分辨率持续升级（2K→3K），重量在缓慢下降（M4 iPad Pro 13 降至 579g），平板与笔记本的边界在模糊。
+    </div>
+  </div>`;
+}
+
+function renderFoldableInsight() {
+  return `<div class="insight-section">
+    <h2><span class="insight-icon">🔍</span> 折叠屏品类盘点与洞察</h2>
+    <div class="insight-grid">
+      <div class="insight-card">
+        <h3><span class="insight-tag tag-size-s">竖折叠</span> 6.7"–7.0"</h3>
+        <p>代表机型：Galaxy Z Flip7（6.9"）、MIX Flip 2（6.86"）、Razr 60（6.9"）、Pocket 2（6.94"）<br>
+        <strong>定位</strong>：时尚便携，口袋友好<br>
+        <strong>人群</strong>：时尚用户、女性用户、轻量手机用户<br>
+        <strong>尺寸关系</strong>：内屏 6.7"–7.0"，展开后接近普通手机体验；折叠后仅半个手机大小，是核心卖点<br>
+        <strong>趋势</strong>：外屏越来越大（从 1.1"→4.0"），外屏可用性成为重要竞争维度</p>
+      </div>
+      <div class="insight-card">
+        <h3><span class="insight-tag tag-size-m">横折叠 · 紧凑</span> ≤7.6"</h3>
+        <p>代表机型：OPPO Find N（7.1"）、Find N2（7.1"）、Pixel Fold（7.6"）、Galaxy Z Fold2/3/4/5/6（7.6"）<br>
+        <strong>定位</strong>：折叠后接近正常手机比例的紧凑横折叠<br>
+        <strong>人群</strong>：手小用户、追求外屏可用性的商务用户、口袋友好优先<br>
+        <strong>尺寸关系</strong>：内屏 ≤7.6" 偏小型平板；外屏比例接近正常手机（如 Find N 系列），折叠态更窄<br>
+        <strong>趋势</strong>：早期 Z Fold 系列代表，OPPO 用更短宽比探索差异化；2024 后逐步被 8.0" 主流化超越</p>
+      </div>
+      <div class="insight-card">
+        <h3><span class="insight-tag tag-size-m">横折叠 · 标准</span> 7.7"–7.95"</h3>
+        <p>代表机型：Mate X3/X5/X6（7.85"–7.93"）、Magic V2/V3/V5（7.92"–7.95"）、Find N3（7.82"）、Mate Xs 2（7.8"）<br>
+        <strong>定位</strong>：主流横折叠，内外屏比例最均衡<br>
+        <strong>人群</strong>：商务旗舰用户、多任务用户、首次折叠屏尝鲜者<br>
+        <strong>尺寸关系</strong>：内屏接近 8" 但仍可单手握持折叠态，外屏 6.4"–6.5" 完整手机体验<br>
+        <strong>趋势</strong>：华为/荣耀主导，重量从 295g 降至 217g（Magic V5），轻薄成为关键突破口</p>
+      </div>
+      <div class="insight-card">
+        <h3><span class="insight-tag tag-size-l">横折叠 · 大屏</span> ≥8.0"</h3>
+        <p>代表机型：Galaxy Z Fold7（8.0"）、Mate X7（8.0"）、Find N5（8.12"）、MIX Fold 系列（8.01"–8.03"）、X Fold 系列（8.03"）、Pixel 9 Pro Fold（8.0"）、Razr Fold（8.1"）<br>
+        <strong>定位</strong>：极致大屏生产力，手机+平板二合一<br>
+        <strong>人群</strong>：移动办公重度用户、内容创作者、追求最大显示面积的高端用户<br>
+        <strong>尺寸关系</strong>：内屏 ≥8" 接近 iPad mini；外屏宽度更宽，比例从早期窄条（24.5:9）回归正常（~20:9）<br>
+        <strong>趋势</strong>：2024–2025 主流方向，三星 Fold7 跨入 8.0"，OPPO N5 推至 8.12"，重量降至 215g，厚度低于 5mm（展开态）</p>
+      </div>
+      <div class="insight-card">
+        <h3><span class="insight-tag tag-size-xxl">三折叠</span> 10.0"–10.2"</h3>
+        <p>代表机型：Galaxy Z TriFold（10.0"）、Mate XT（10.2"）<br>
+        <strong>定位</strong>：手机→平板→小桌面的形态跃迁<br>
+        <strong>人群</strong>：科技尝鲜者、高级商务、演示场景<br>
+        <strong>尺寸关系</strong>：三折展开后 10" 接近标准平板，同时具备手机和平板双重形态<br>
+        <strong>趋势</strong>：2024–2025 年首批产品问世，仍属极小众高端，重量 306–309g，厚度是主要挑战</p>
+      </div>
+      <div class="insight-card">
+        <h3><span class="insight-tag tag-size-xl">阔折叠</span> 6.3"–7.7"</h3>
+        <p>代表机型：Pura X（6.3"）、Pura X Max（7.7"）<br>
+        <strong>定位</strong>：宽屏比例折叠，更接近书籍/杂志阅读体验<br>
+        <strong>人群</strong>：阅读爱好者、内容消费者、差异化需求用户<br>
+        <strong>尺寸关系</strong>：独特宽屏比（16:10 左右），与传统竖折叠的窄条外屏截然不同<br>
+        <strong>趋势</strong>：华为独创品类，Pura X Max 2026 年将内屏推至 7.7"，外屏可用性大幅提升</p>
+      </div>
+    </div>
+    <div class="insight-summary">
+      <strong>核心洞察：</strong>折叠屏已从「尝鲜玩具」进入「日常可用」阶段，核心驱动力是<strong>重量突破</strong>——横折叠从 280g+ 降至 215g（Fold7），竖折叠稳定在 188–199g 区间，与直板旗舰持平。<strong>横折叠</strong>是最成熟、品牌覆盖最广的品类（7 品牌 25+ 机型），内部已分化出三档：<strong>紧凑型（≤7.6"）</strong>定位口袋友好的早期路线，<strong>标准型（7.7"–7.95"）</strong>是华为/荣耀主导的均衡方案，<strong>大屏型（≥8.0"）</strong>是 2024–2025 年三星/OPPO/小米/vivo/Google 共同推动的主流方向，外屏比例回归正常是最大进步。<strong>竖折叠</strong>定位更时尚，价格下探至 3000 元档，成为大众接触折叠屏的入口。<strong>三折叠</strong>和<strong>阔折叠</strong>是 2024–2025 年的新品类，丰富了折叠形态的可能性，但短期内仍属小众。Google 以 Pixel Fold / 9 Pro Fold 入局，标志美国市场也开始拥抱折叠屏。
+    </div>
+  </div>`;
+}
+
+// ==================== RENDER ====================
+
+function renderStats() {
+  let data, brands, catLabel;
+  if (currentCat === "phone") {
+    data = PHONES; catLabel = "手机";
+  } else if (currentCat === "tablet") {
+    data = TABLETS; catLabel = "平板";
+  } else {
+    data = FOLDABLES; catLabel = "折叠屏";
+  }
+
+  const total = data.length;
+  const brandCount = [...new Set(data.map(d => d.brand))].length;
+  const years = [...new Set(data.map(d => d.year))];
+  const minYear = Math.min(...years);
+  const maxYear = Math.max(...years);
+
+  let chips = `<div class="stat-chip">共 <strong>${total}</strong> 款${catLabel}</div>`;
+  chips += `<div class="stat-chip"><strong>${brandCount}</strong> 个品牌</div>`;
+  chips += `<div class="stat-chip">时间跨度 <strong>${minYear}-${maxYear}</strong></div>`;
+
+  if (currentCat === "foldable") {
+    const hAll = data.filter(d => d.type === "h");
+    const hCompact = hAll.filter(d => d.screen <= 7.6).length;
+    const hStandard = hAll.filter(d => d.screen >= 7.7 && d.screen < 8.0).length;
+    const hLarge = hAll.filter(d => d.screen >= 8.0).length;
+    const v = data.filter(d => d.type === "v").length;
+    const t = data.filter(d => d.type === "t").length;
+    const w = data.filter(d => d.type === "w").length;
+    chips += `<div class="stat-chip">横折叠 <strong>${hAll.length}</strong>（紧凑 ${hCompact} / 标准 ${hStandard} / 大屏 ${hLarge}）</div>`;
+    chips += `<div class="stat-chip">竖折叠 <strong>${v}</strong></div>`;
+    chips += `<div class="stat-chip">三折叠 <strong>${t}</strong></div>`;
+    chips += `<div class="stat-chip">阔折叠 <strong>${w}</strong></div>`;
+  }
+
+  document.getElementById("statsBar").innerHTML = chips;
+}
+
+function renderFilterBar() {
+  const area = document.getElementById("filterArea");
+  let html = "";
+
+  // Foldable type pills (kept as-is, stacked above search)
+  if (currentCat === "foldable") {
+    const filters = [
+      { key:"all", label:"\u5168\u90e8" },
+      { key:"h", label:"\u6a2a\u6298\u53e0 (\u4e66\u672c\u5f0f)" },
+      { key:"h-compact", label:"\u2515 \u7d27\u51d1 \u22647.6\"" },
+      { key:"h-standard", label:"\u2515 \u6807\u51c6 7.7\"\u20137.95\"" },
+      { key:"h-large", label:"\u2515 \u5927\u5c4f \u22658.0\"" },
+      { key:"v", label:"\u7ad6\u6298\u53e0 (\u7ffb\u76d6\u5f0f)" },
+      { key:"t", label:"\u4e09\u6298\u53e0" },
+      { key:"w", label:"\u9614\u6298\u53e0" },
+    ];
+    html += `<div class="filter-bar">${filters.map(f =>
+      `<button class="filter-btn${currentFilter===f.key?" active":""}" data-filter="${f.key}">${f.label}</button>`
+    ).join("")}</div>`;
+  }
+
+  // Search bar (all tabs)
+  html += `<div class="search-bar">
+    <div class="search-group">
+      <label>\u{1F50D} \u5173\u952e\u8bcd</label>
+      <input type="text" id="kwInput" class="search-input kw" placeholder="\u8bbe\u5907\u540d / \u54c1\u724c\uff0c\u5982 iPhone\u3001\u534e\u4e3a\u3001Ultra" value="${searchKw.replace(/"/g,'&quot;')}">
+    </div>
+    <div class="search-group">
+      <label>\u5c4f\u5e55\u5c3a\u5bf8(\u5bf8)</label>
+      <input type="number" id="minInput" class="search-input size" placeholder="\u6700\u5c0f" step="0.1" value="${minSize!=null?minSize:''}">
+      <span class="search-sep">\u2013</span>
+      <input type="number" id="maxInput" class="search-input size" placeholder="\u6700\u5927" step="0.1" value="${maxSize!=null?maxSize:''}">
+    </div>
+    <div class="search-group">
+      <label>${currentCat==="foldable"?"\u5c55\u5f00\u5bbd(mm)":"\u673a\u8eab\u5bbd(mm)"}</label>
+      <input type="number" id="minWInput" class="search-input size" placeholder="\u6700\u5c0f" step="0.1" value="${minW!=null?minW:''}">
+      <span class="search-sep">\u2013</span>
+      <input type="number" id="maxWInput" class="search-input size" placeholder="\u6700\u5927" step="0.1" value="${maxW!=null?maxW:''}">
+    </div>
+    <div class="search-group">
+      <label>${currentCat==="foldable"?"\u5c55\u5f00\u9ad8(mm)":"\u673a\u8eab\u9ad8(mm)"}</label>
+      <input type="number" id="minHInput" class="search-input size" placeholder="\u6700\u5c0f" step="0.1" value="${minH!=null?minH:''}">
+      <span class="search-sep">\u2013</span>
+      <input type="number" id="maxHInput" class="search-input size" placeholder="\u6700\u5927" step="0.1" value="${maxH!=null?maxH:''}">
+    </div>
+    <button class="search-clear" id="clearBtn">\u6e05\u9664\u7b5b\u9009</button>
+    <span class="search-result-count" id="resultCount"></span>
+  </div>`;
+
+  area.innerHTML = html;
+
+  // bind foldable pills
+  area.querySelectorAll(".filter-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      area.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      currentFilter = btn.dataset.filter;
+      renderContent();
+    });
+  });
+
+  // bind search inputs (live)
+  const kwEl = document.getElementById("kwInput");
+  const minEl = document.getElementById("minInput");
+  const maxEl = document.getElementById("maxInput");
+  if (kwEl) kwEl.addEventListener("input", () => { searchKw = kwEl.value; renderContent(); restoreFocus("kwInput", kwEl.value.length); });
+  if (minEl) minEl.addEventListener("input", () => { minSize = minEl.value===""?null:parseFloat(minEl.value); renderContent(); restoreFocus("minInput"); });
+  if (maxEl) maxEl.addEventListener("input", () => { maxSize = maxEl.value===""?null:parseFloat(maxEl.value); renderContent(); restoreFocus("maxInput"); });
+  const minWEl = document.getElementById("minWInput");
+  const maxWEl = document.getElementById("maxWInput");
+  const minHEl = document.getElementById("minHInput");
+  const maxHEl = document.getElementById("maxHInput");
+  if (minWEl) minWEl.addEventListener("input", () => { minW = minWEl.value===""?null:parseFloat(minWEl.value); renderContent(); restoreFocus("minWInput"); });
+  if (maxWEl) maxWEl.addEventListener("input", () => { maxW = maxWEl.value===""?null:parseFloat(maxWEl.value); renderContent(); restoreFocus("maxWInput"); });
+  if (minHEl) minHEl.addEventListener("input", () => { minH = minHEl.value===""?null:parseFloat(minHEl.value); renderContent(); restoreFocus("minHInput"); });
+  if (maxHEl) maxHEl.addEventListener("input", () => { maxH = maxHEl.value===""?null:parseFloat(maxHEl.value); renderContent(); restoreFocus("maxHInput"); });
+  const clearEl = document.getElementById("clearBtn");
+  if (clearEl) clearEl.addEventListener("click", () => { searchKw=""; minSize=null; maxSize=null; minW=null; maxW=null; minH=null; maxH=null; renderFilterBar(); renderContent(); });
+}
+
+// keep caret/focus in the active input after re-render
+function restoreFocus(id, caret) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.focus();
+  if (caret != null && el.setSelectionRange) {
+    try { el.setSelectionRange(caret, caret); } catch(e) {}
+  }
+}
+
+// apply keyword + size-range filter on a dataset
+function applySearch(data) {
+  let out = data;
+  const kw = searchKw.trim().toLowerCase();
+  if (kw) {
+    out = out.filter(d => {
+      const info = ALL_BRANDS.find(b => b.key === d.brand);
+      const brandName = info ? info.name.toLowerCase() : d.brand;
+      return d.name.toLowerCase().includes(kw) || brandName.includes(kw) || d.brand.toLowerCase().includes(kw);
+    });
+  }
+  if (minSize != null && !isNaN(minSize)) out = out.filter(d => d.screen >= minSize);
+  if (maxSize != null && !isNaN(maxSize)) out = out.filter(d => d.screen <= maxSize);
+  if (minW != null && !isNaN(minW)) out = out.filter(d => d.w != null && d.w >= minW);
+  if (maxW != null && !isNaN(maxW)) out = out.filter(d => d.w != null && d.w <= maxW);
+  if (minH != null && !isNaN(minH)) out = out.filter(d => d.h != null && d.h >= minH);
+  if (maxH != null && !isNaN(maxH)) out = out.filter(d => d.h != null && d.h <= maxH);
+  return out;
+}
+
+function filterFoldables(filterKey) {
+  if (filterKey === "all") return FOLDABLES;
+  if (filterKey === "h-compact") return FOLDABLES.filter(d => d.type === "h" && d.screen <= 7.6);
+  if (filterKey === "h-standard") return FOLDABLES.filter(d => d.type === "h" && d.screen >= 7.7 && d.screen < 8.0);
+  if (filterKey === "h-large") return FOLDABLES.filter(d => d.type === "h" && d.screen >= 8.0);
+  return FOLDABLES.filter(d => d.type === filterKey);
+}
+
+function renderContent() {
+  let data;
+  if (currentCat === "phone") data = PHONES;
+  else if (currentCat === "tablet") data = TABLETS;
+  else {
+    data = filterFoldables(currentFilter);
+  }
+
+  // v1.6: apply keyword + size-range search
+  const hasSearch = (searchKw.trim() !== "") || (minSize != null) || (maxSize != null) || (minW != null) || (maxW != null) || (minH != null) || (maxH != null);
+  data = applySearch(data);
+
+  // live result count
+  const rc = document.getElementById("resultCount");
+  if (rc) rc.innerHTML = hasSearch ? `\u7b5b\u9009\u51fa <strong>${data.length}</strong> \u6b3e` : "";
+
+  const brands = getBrandsForData(data);
+  const grouped = {};
+  brands.forEach(b => { grouped[b.key] = []; });
+  data.forEach(d => { if (grouped[d.brand]) grouped[d.brand].push(d); });
+
+  const container = document.getElementById("mainContent");
+  let html = "";
+
+  // Insight section
+  html += renderInsight();
+
+  // Trend section for foldable "all" view (hidden while searching)
+  if (currentCat === "foldable" && currentFilter === "all" && !hasSearch) {
+    html += renderFoldableTrend(data);
+  }
+
+  // Brand tables
+  brands.forEach(brand => {
+    const devices = grouped[brand.key];
+    if (!devices || devices.length === 0) return;
+    devices.sort((a, b) => a.screen - b.screen || a.year - b.year);
+
+    html += `<div class="brand-section" data-brand="${brand.key}">`;
+    html += `<div class="brand-header" onclick="toggleBrand(this)">
+      <span class="brand-dot" style="background:${brand.color}"></span>
+      <span class="brand-name">${brand.name}</span>
+      <span class="brand-count">${devices.length} 款</span>
+      <span class="brand-arrow">\u25BC</span>
+    </div>`;
+    html += `<div class="brand-body"><table>`;
+    html += `<thead><tr>
+      <th>\u8BBE\u5907</th>
+      <th>\u5E74\u4EFD</th>
+      ${currentCat==="foldable"?"<th>\u7C7B\u578B</th>":""}
+      <th>${currentCat==="foldable"?"\u5185\u5C4F\u5C3A\u5BF8":"\u5C4F\u5E55\u5C3A\u5BF8"}</th>
+      <th>\u5206\u8FA8\u7387</th>
+      <th>PPI</th>
+      <th>${currentCat==="foldable"?"\u5C55\u5F00\u5BBD (mm)":"\u673A\u8EAB\u5BBD (mm)"}</th>
+      <th>${currentCat==="foldable"?"\u5C55\u5F00\u9AD8 (mm)":"\u673A\u8EAB\u9AD8 (mm)"}</th>
+      <th>\u4E0A\u8FB9\u6846 (mm)</th>
+      <th>\u4E0B\u8FB9\u6846 (mm)</th>
+      <th>\u5DE6\u8FB9\u6846 (mm)</th>
+      <th>\u53F3\u8FB9\u6846 (mm)</th>
+      <th>\u91CD\u91CF (g)</th>
+      <th>\u6765\u6E90</th>
+    </tr></thead><tbody>`;
+
+    devices.forEach(d => {
+      html += `<tr>`;
+      html += `<td class="device-cell"><span class="device-name">${d.name}</span></td>`;
+      html += `<td class="num">${d.year}</td>`;
+      if (currentCat === "foldable") {
+        html += `<td><span class="type-tag ${TYPE_CLASS[d.type]}">${TYPE_MAP[d.type]}</span></td>`;
+      }
+      html += `<td class="num">${d.screen}"</td>`;
+      html += `<td class="num">${d.res}</td>`;
+      html += `<td class="num">${fmt(d.ppi)}</td>`;
+      html += `<td class="num">${fmt(d.w)}</td>`;
+      html += `<td class="num">${fmt(d.h)}</td>`;
+      html += `<td class="num">${fmt(d.bt)}</td>`;
+      html += `<td class="num">${fmt(d.bb)}</td>`;
+      html += `<td class="num">${fmt(d.bl)}</td>`;
+      html += `<td class="num">${fmt(d.br)}</td>`;
+      html += `<td class="num ${weightClass(d.weight, currentCat)}">${fmt(d.weight)}</td>`;
+      html += `<td>${d.bezel_src?('<span class="src-tag src-'+d.bezel_src+'">'+SRC_MAP[d.bezel_src]+'</span>'):'\u2014'}</td>`;
+      html += `</tr>`;
+    });
+
+    html += `</tbody></table></div></div>`;
+  });
+
+  // v1.6: no-result message
+  if (data.length === 0) {
+    html += `<div class="no-result">\u6ca1\u6709\u7b26\u5408\u6761\u4ef6\u7684\u8bbe\u5907\uff0c\u8bf7\u8c03\u6574\u5173\u952e\u8bcd\u6216\u5c3a\u5bf8\u8303\u56f4\u3002</div>`;
+  }
+
+  // Footnote
+  let note = '<strong>\u8BF4\u660E\uFF1A</strong>';
+  if (currentCat === "phone") {
+    note += '<br>\u2022 \u673A\u8EAB\u5BBD/\u9AD8\u6307\u8BBE\u5907\u672A\u6298\u53E0\u72B6\u6001\u4E0B\u7684\u7269\u7406\u5C3A\u5BF8\uFF08\u6BEB\u7C73\uFF09';
+    note += '<br>\u2022 \u6BCF\u4E2A\u54C1\u724C\u9009\u53D6\u4EE3\u8868\u6027\u65D7\u8230/\u4E3B\u529B\u673A\u578B\uFF0C\u4E0D\u5305\u542B\u4E2D\u7AEF\u673A';
+    note += '<br>\u2022 \u6570\u636E\u6765\u6E90\uFF1A\u5404\u54C1\u724C\u5B98\u7F51\u3001GSMArena\u7B49\uFF0C\u5982\u6709\u9057\u6F0F\u6216\u52D8\u8BEF\u6B22\u8FCE\u6307\u6B63';
+  } else if (currentCat === "tablet") {
+    note += '<br>\u2022 \u673A\u8EAB\u5BBD/\u9AD8\u6307\u5E73\u677F\u672A\u5C55\u5F00/\u672A\u914D\u4EF6\u952E\u76D8\u72B6\u6001\u4E0B\u7684\u7269\u7406\u5C3A\u5BF8\uFF08\u6BEB\u7C73\uFF09';
+    note += '<br>\u2022 \u6BCF\u4E2A\u54C1\u724C\u9009\u53D6\u4EE3\u8868\u6027\u5E73\u677F\u4EA7\u54C1\u7EBF';
+    note += '<br>\u2022 \u6570\u636E\u6765\u6E90\uFF1A\u5404\u54C1\u724C\u5B98\u7F51\u3001GSMArena\u3001Apple\u5B98\u65B9\u6280\u672F\u89C4\u683C\u9875\u7B49';
+  } else {
+    note += '<br>\u2022 \u5C55\u5F00\u5BBD/\u9AD8\u6307\u5C4F\u5E55\u5C55\u5F00\u72B6\u6001\u4E0B\u673A\u8EAB\u7684\u7269\u7406\u5C3A\u5BF8\uFF0C\u90E8\u5206\u578B\u53F7\u5B98\u65B9\u672A\u516C\u5E03';
+    note += '<br>\u2022 PPI \u6570\u636E\u6765\u81EA\u5B98\u65B9\u53C2\u6570\u9875\u6216\u7B2C\u4E09\u65B9\u6D4B\u91CF\uFF0C\u90E8\u5206\u65E9\u671F\u578B\u53F7\u672A\u516C\u5E03';
+    note += '<br>\u2022 \u4E09\u6298\u53E0\u6307\u5C4F\u5E55\u4E09\u6298\u5C55\u5F00\u5F62\u6001\uFF1B\u9614\u6298\u53E0\uFF08\u534E\u4E3A Pura X \u7CFB\u5217\uFF09\u6307\u72EC\u7279\u5BBD\u5C4F\u6BD4\u4F8B\u6298\u53E0\u5F62\u6001';
+    note += '<br>\u2022 \u6570\u636E\u6765\u6E90\uFF1A\u5404\u54C1\u724C\u5B98\u7F51\u3001GSMArena\u3001Wikipedia\u3001\u767E\u5EA6\u767E\u79D1\u7B49';
+  }
+
+  note += '<br><br><strong>边框（黑边）数据说明：</strong>';
+  note += '<br>• 上/下/左/右边框指屏幕可视区域边缘到机身物理边缘的距离（mm），折叠屏取内屏';
+  note += '<br>• <span class="src-tag src-est">估算</span> 无真实实测参数的设备，按以下公式计算：<strong>长边黑边（上=下）=（设备长边 − 屏幕长边）/2</strong>；<strong>短边黑边（左=右）=（设备短边 − 屏幕短边）/2</strong>。其中屏幕长/短边 = 分辨率长/短边 ÷ PPI × 25.4';
+  note += '<br>• 由公式可知上下取同值、左右取同值（未区分额头与下巴），属均分近似，误差约 ±0.3–0.8mm';
+  note += '<br>• <span class="src-tag src-missing">缺失</span> 表示原始分辨率/PPI/机身尺寸口径不一致、反推出现负值或明显失真，故留空';
+  note += '<br>• 原始机身宽/高为含边框的整机尺寸，故边框为“含机身中框”的视觉黑边近似值，仅供 UI 适配参考';
+  note += '<br>• <span class="src-tag src-todo">待补</span> 表示该设备已发布/即将发布但官方尚未公布完整参数，已先列入，参数待后续补录';
+  html += `<div class="footnote">${note}</div>`;
+  container.innerHTML = html;
+}
+
+function renderFoldableTrend(devices) {
+  const hDevices = devices.filter(d => d.type === "h" && d.weight).sort((a, b) => a.year - b.year);
+  const vDevices = devices.filter(d => d.type === "v" && d.weight).sort((a, b) => a.year - b.year);
+
+  let html = `<div class="trend-section"><h2>\u8D8B\u52BF\u6D1E\u5BDF</h2><div class="trend-grid">`;
+
+  const brandColors = {};
+  ALL_BRANDS.forEach(b => { brandColors[b.key] = b.color; });
+
+  // 横折叠 — 各年最轻代表
+  const hByYear = {};
+  hDevices.forEach(d => { if (!hByYear[d.year] || d.weight < hByYear[d.year].weight) hByYear[d.year] = d; });
+
+  html += `<div class="trend-card"><h3>\u6A2A\u6298\u53E0 \u2014 \u5404\u5E74\u6700\u8F7B\u4EE3\u8868</h3><div class="bar-chart">`;
+  Object.entries(hByYear).sort((a,b) => Number(a[0]) - Number(b[0])).forEach(([year, d]) => {
+    const pct = Math.min(100, (d.weight / 320) * 100);
+    const color = brandColors[d.brand] || "var(--accent-other)";
+    html += `<div class="bar-row"><span class="bar-label">${year}</span><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color}">${d.name.split(" ")[0]}</div></div><span class="bar-value">${d.weight}g</span></div>`;
+  });
+  html += `</div></div>`;
+
+  // 横折叠 — 各年最大内屏
+  const screenByYear = {};
+  hDevices.forEach(d => { if (!screenByYear[d.year] || d.screen > screenByYear[d.year].screen) screenByYear[d.year] = d; });
+
+  html += `<div class="trend-card"><h3>\u6A2A\u6298\u53E0 \u2014 \u5404\u5E74\u6700\u5927\u5185\u5C4F\u5C3A\u5BF8</h3><div class="bar-chart">`;
+  Object.entries(screenByYear).sort((a,b) => Number(a[0]) - Number(b[0])).forEach(([year, d]) => {
+    const pct = (d.screen / 10.5) * 100;
+    const color = brandColors[d.brand] || "var(--accent-other)";
+    html += `<div class="bar-row"><span class="bar-label">${year}</span><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color}">${d.screen}"</div></div><span class="bar-value">${d.screen}"</span></div>`;
+  });
+  html += `</div></div>`;
+
+  // 品牌设备数量
+  const brandCount = {};
+  devices.forEach(d => { brandCount[d.brand] = (brandCount[d.brand] || 0) + 1; });
+  const maxCount = Math.max(...Object.values(brandCount));
+
+  html += `<div class="trend-card"><h3>\u54C1\u724C\u8BBE\u5907\u6570\u91CF</h3><div class="bar-chart">`;
+  Object.entries(brandCount).sort((a,b) => b[1] - a[1]).forEach(([brand, count]) => {
+    const pct = (count / maxCount) * 100;
+    const info = ALL_BRANDS.find(b => b.key === brand);
+    const color = info ? info.color : "var(--accent-other)";
+    const name = info ? info.name.split(" ")[0] : brand;
+    html += `<div class="bar-row"><span class="bar-label">${name}</span><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color}">${count} \u6B3E</div></div><span class="bar-value">${count}</span></div>`;
+  });
+  html += `</div></div>`;
+
+  // 竖折叠 — 各年最轻代表
+  const vByYear = {};
+  vDevices.forEach(d => { if (!vByYear[d.year] || d.weight < vByYear[d.year].weight) vByYear[d.year] = d; });
+
+  html += `<div class="trend-card"><h3>\u7AD6\u6298\u53E0 \u2014 \u5404\u5E74\u6700\u8F7B\u4EE3\u8868</h3><div class="bar-chart">`;
+  Object.entries(vByYear).sort((a,b) => Number(a[0]) - Number(b[0])).forEach(([year, d]) => {
+    const pct = Math.min(100, (d.weight / 210) * 100);
+    const color = brandColors[d.brand] || "var(--accent-other)";
+    html += `<div class="bar-row"><span class="bar-label">${year}</span><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color}">${d.name.split(" ")[0]}</div></div><span class="bar-value">${d.weight}g</span></div>`;
+  });
+  html += `</div></div>`;
+
+  html += `</div></div>`;
+  return html;
+}
+
+function toggleBrand(el) {
+  el.closest(".brand-section").classList.toggle("collapsed");
+}
+
+// ==================== CATEGORY TAB LOGIC ====================
+
+document.querySelectorAll(".cat-tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".cat-tab").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    currentCat = tab.dataset.cat;
+    currentFilter = "all";
+    searchKw = ""; minSize = null; maxSize = null; minW = null; maxW = null; minH = null; maxH = null;
+    renderStats();
+    renderFilterBar();
+    renderContent();
+  });
+});
+
+// ==================== INIT ====================
+renderStats();
+renderFilterBar();
+renderContent();
+</script>
+</body>
+</html>
