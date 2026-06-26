@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>移动设备参数概览 v1.8（2020-2026）</title>
+<title>移动设备参数概览 v1.9（2020-2026）</title>
 <style>
   :root {
     --bg: #f5f5f7;
@@ -42,7 +42,7 @@
     top: 0;
     z-index: 100;
   }
-  /* Sticky filter/search area below header (v1.8) */
+  /* Sticky filter/search area below header (v1.9) */
   #filterArea {
     position: sticky;
     top: var(--header-h, 120px);
@@ -141,7 +141,7 @@
     border-color: var(--text-primary);
   }
 
-  /* Search bar (v1.8) */
+  /* Search bar (v1.9) */
   .search-bar {
     max-width: 1448px;
     margin: 12px auto 0;
@@ -333,6 +333,12 @@
   /* Table */
   .brand-body { overflow-x: auto; }
   .bezel-cell-tag { display:inline-block; margin-left:4px; font-size:10px; padding:0 5px; border-radius:4px; vertical-align:middle; }
+  /* v1.9: 异常值标记 */
+  .anomaly-tag {
+    display:inline-block; margin-left:6px; padding:1px 7px; border-radius:10px;
+    background:#fdecea; color:#c0392b; font-size:10px; font-weight:600;
+    vertical-align:middle; cursor:help; white-space:nowrap;
+  }
   table {
     width: 100%;
     border-collapse: collapse;
@@ -484,14 +490,14 @@
   .src-measured { background:#e6f4ea; color:#137333; }
   .src-missing { background:#f0f0f5; color:#aeaeb2; }
   .src-todo { background:#fdecea; color:#c0392b; }
-  /* v1.8: 每个边框列名下方的“估算”小标签——浅灰底浅色字、小圆角 */
+  /* v1.9: 每个边框列名下方的“估算”小标签——浅灰底浅色字、小圆角 */
   thead th { vertical-align: top; }
   .bezel-est-badge {
     display:inline-block; margin-top:4px; padding:1px 8px; border-radius:10px;
     background:#eee; color:#999; font-size:10px; font-weight:400;
     text-transform:none; letter-spacing:0;
   }
-  /* v1.8: 可排序表头 */
+  /* v1.9: 可排序表头 */
   th.sortable { cursor:pointer; user-select:none; }
   th.sortable:hover { color:var(--text-primary); }
   th.sortable .sort-arrow { font-size:13px; margin-left:4px; color:var(--text-tertiary); font-weight:700; }
@@ -503,7 +509,7 @@
 
 <div class="header">
   <div class="header-inner">
-    <h1>移动设备参数概览 <span style="font-size:13px;font-weight:400;color:var(--text-tertiary)">v1.8</span></h1>
+    <h1>移动设备参数概览 <span style="font-size:13px;font-weight:400;color:var(--text-tertiary)">v1.9</span></h1>
     <p>2020-2026 年 | 覆盖手机、折叠屏、平板三大品类 | 华为、苹果、三星、小米、OPPO、vivo、荣耀、摩托罗拉、Google、联想 | 数据截至 2026年5月</p>
     <div class="cat-tabs">
       <div class="cat-tab active" data-cat="phone">📱 手机</div>
@@ -1185,6 +1191,46 @@ function filterFoldables(filterKey) {
   return FOLDABLES.filter(d => d.type === filterKey);
 }
 
+// ==================== 异常值统计（v1.9） ====================
+// 口径：全部设备（手机+平板+折叠屏）混合对比；某指标偏离均值±2倍标准差则计为异常。
+const ANOMALY_METRICS = [
+  { key:'ratio', label:'\u5bbd\u9ad8\u6bd4', get:d => (d.w && d.h) ? (Math.max(d.w,d.h)/Math.min(d.w,d.h)) : null },
+  { key:'ppi',   label:'PPI', get:d => (d.ppi!=null && !isNaN(d.ppi)) ? Number(d.ppi) : null },
+  { key:'bezel', label:'\u8fb9\u6846', get:d => (d.bt!=null) ? ((d.bt+d.bb+d.bl+d.br)/4) : null },
+  { key:'w',     label:'\u673a\u8eab\u5bbd', get:d => (d.w!=null) ? Number(d.w) : null },
+  { key:'h',     label:'\u673a\u8eab\u9ad8', get:d => (d.h!=null) ? Number(d.h) : null },
+];
+let ANOMALY_STATS = null;
+function buildAnomalyStats() {
+  const all = [].concat(PHONES, TABLETS, FOLDABLES);
+  const stats = {};
+  ANOMALY_METRICS.forEach(m => {
+    const vals = all.map(m.get).filter(v => v!=null && !isNaN(v));
+    const n = vals.length;
+    const mean = vals.reduce((a,b)=>a+b,0)/n;
+    const variance = vals.reduce((a,b)=>a+(b-mean)*(b-mean),0)/n;
+    const sd = Math.sqrt(variance);
+    stats[m.key] = { mean, sd };
+  });
+  ANOMALY_STATS = stats;
+}
+// 返回某设备的异常指标描述数组
+function getAnomalies(d) {
+  if (!ANOMALY_STATS) buildAnomalyStats();
+  const out = [];
+  ANOMALY_METRICS.forEach(m => {
+    const v = m.get(d);
+    if (v==null || isNaN(v)) return;
+    const s = ANOMALY_STATS[m.key];
+    if (!s || s.sd === 0) return;
+    const z = (v - s.mean) / s.sd;
+    if (Math.abs(z) >= 2) {
+      out.push(m.label + (z>0 ? '\u504f\u9ad8' : '\u504f\u4f4e'));
+    }
+  });
+  return out;
+}
+
 function renderContent() {
   let data;
   if (currentCat === "phone") data = PHONES;
@@ -1193,7 +1239,7 @@ function renderContent() {
     data = filterFoldables(currentFilter);
   }
 
-  // v1.8: apply keyword + size-range search
+  // v1.9: apply keyword + size-range search
   const hasSearch = (searchKw.trim() !== "") || (minSize != null) || (maxSize != null) || (minW != null) || (maxW != null) || (minH != null) || (maxH != null);
   data = applySearch(data);
 
@@ -1264,7 +1310,9 @@ function renderContent() {
 
     devices.forEach(d => {
       html += `<tr>`;
-      html += `<td class="device-cell"><span class="device-name">${d.name}</span></td>`;
+      const anomalies = getAnomalies(d);
+      const anomalyTag = anomalies.length ? ` <span class="anomaly-tag" title="\u4e0e\u5168\u4f53\u8bbe\u5907\u5dee\u5f02\u8fc7\u5927\uff08\u8de8\u54c1\u7c7b\u5bf9\u6bd4\uff09\uff1a${anomalies.join("\u3001")}">\u26A0 \u5f02\u5e38</span>` : "";
+      html += `<td class="device-cell"><span class="device-name">${d.name}</span>${anomalyTag}</td>`;
       html += `<td class="num">${d.year}</td>`;
       if (currentCat === "foldable") {
         html += `<td><span class="type-tag ${TYPE_CLASS[d.type]}">${TYPE_MAP[d.type]}</span></td>`;
@@ -1274,7 +1322,7 @@ function renderContent() {
       html += `<td class="num">${fmt(d.ppi)}</td>`;
       html += `<td class="num">${fmt(d.w)}</td>`;
       html += `<td class="num">${fmt(d.h)}</td>`;
-      // v1.8: bezel source moved to grouped header (default 估算). Only flag rows that are NOT 估算 (待补/缺失) inline.
+      // v1.9: bezel source moved to grouped header (default 估算). Only flag rows that are NOT 估算 (待补/缺失) inline.
       const btTag = (d.bezel_src && d.bezel_src !== "est") ? (' <span class="bezel-cell-tag src-'+d.bezel_src+'">'+SRC_MAP[d.bezel_src]+'</span>') : "";
       html += `<td class="num">${fmt(d.bt)}${btTag}</td>`;
       html += `<td class="num">${fmt(d.bb)}</td>`;
@@ -1287,7 +1335,7 @@ function renderContent() {
     html += `</tbody></table></div></div>`;
   });
 
-  // v1.8: no-result message
+  // v1.9: no-result message
   if (data.length === 0) {
     html += `<div class="no-result">\u6ca1\u6709\u7b26\u5408\u6761\u4ef6\u7684\u8bbe\u5907\uff0c\u8bf7\u8c03\u6574\u5173\u952e\u8bcd\u6216\u5c3a\u5bf8\u8303\u56f4\u3002</div>`;
   }
@@ -1317,9 +1365,13 @@ function renderContent() {
   note += '<br>• <span class="src-tag src-missing">缺失</span> 表示原始分辨率/PPI/机身尺寸口径不一致、反推出现负值或明显失真，故留空';
   note += '<br>• 原始机身宽/高为含边框的整机尺寸，故边框为“含机身中框”的视觉黑边近似值，仅供 UI 适配参考';
   note += '<br>• <span class="src-tag src-todo">待补</span> 表示该设备已发布/即将发布但官方尚未公布完整参数，已先列入，参数待后续补录';
+  note += '<br><br><strong>异常标记说明：</strong>';
+  note += '<br>• <span class="anomaly-tag">⚠ 异常</span> 表示该设备在<strong>宽高比 / PPI / 边框 / 机身宽 / 机身高</strong>中至少一项，与<strong>全部设备（手机+平板+折叠屏混合）</strong>的均值偏离超过 ±2 倍标准差（统计离群值）';
+  note += '<br>• 鼠标悬停标签可查看具体哪项指标异常。因采用跨品类混合口径，平板/折叠屏因形态差异较易被标记，属正常现象';
+
   html += `<div class="footnote">${note}</div>`;
   container.innerHTML = html;
-  // v1.8: 绑定可排序表头
+  // v1.9: 绑定可排序表头
   container.querySelectorAll('th.sortable').forEach(th => {
     th.addEventListener('click', () => {
       const k = th.dataset.sortkey;
@@ -1414,7 +1466,7 @@ document.querySelectorAll(".cat-tab").forEach(tab => {
   });
 });
 
-// ==================== STICKY OFFSET SYNC (v1.8) ====================
+// ==================== STICKY OFFSET SYNC (v1.9) ====================
 // 让筛选/搜索栏吸顶时正好贴在 header 下方：把 header 实际高度写入 --header-h
 function syncHeaderHeight() {
   const header = document.querySelector(".header");
