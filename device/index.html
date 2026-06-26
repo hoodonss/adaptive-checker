@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>移动设备参数概览 v1.9（2020-2026）</title>
+<title>移动设备参数概览 v2.0（2020-2026）</title>
 <style>
   :root {
     --bg: #f5f5f7;
@@ -42,7 +42,7 @@
     top: 0;
     z-index: 100;
   }
-  /* Sticky filter/search area below header (v1.9) */
+  /* Sticky filter/search area below header (v2.0) */
   #filterArea {
     position: sticky;
     top: var(--header-h, 120px);
@@ -141,7 +141,7 @@
     border-color: var(--text-primary);
   }
 
-  /* Search bar (v1.9) */
+  /* Search bar (v2.0) */
   .search-bar {
     max-width: 1448px;
     margin: 12px auto 0;
@@ -333,7 +333,7 @@
   /* Table */
   .brand-body { overflow-x: auto; }
   .bezel-cell-tag { display:inline-block; margin-left:4px; font-size:10px; padding:0 5px; border-radius:4px; vertical-align:middle; }
-  /* v1.9: 参数差异红点 */
+  /* v2.0: 参数差异红点 */
   .diff-dot {
     display:inline-block; width:7px; height:7px; border-radius:50%;
     background:#e3342f; vertical-align:middle; margin-left:5px; cursor:help;
@@ -489,27 +489,65 @@
   .src-measured { background:#e6f4ea; color:#137333; }
   .src-missing { background:#f0f0f5; color:#aeaeb2; }
   .src-todo { background:#fdecea; color:#c0392b; }
-  /* v1.9: 每个边框列名下方的“估算”小标签——浅灰底浅色字、小圆角 */
+  /* v2.0: 每个边框列名下方的“估算”小标签——浅灰底浅色字、小圆角 */
   thead th { vertical-align: top; }
   .bezel-est-badge {
     display:inline-block; margin-top:4px; padding:1px 8px; border-radius:10px;
     background:#eee; color:#999; font-size:10px; font-weight:400;
     text-transform:none; letter-spacing:0;
   }
-  /* v1.9: 可排序表头 */
+  /* v2.0: 可排序表头 */
   th.sortable { cursor:pointer; user-select:none; }
   th.sortable:hover { color:var(--text-primary); }
   th.sortable .sort-arrow { font-size:13px; margin-left:4px; color:var(--text-tertiary); font-weight:700; }
   th.sortable:hover .sort-arrow { color:var(--text-secondary); }
   th.sortable.sort-active .sort-arrow { color:var(--text-primary); font-size:14px; }
+  /* v2.0: 选中对比 */
+  th.sel-col, td.sel-col { text-align:center; width:34px; }
+  .row-check { width:15px; height:15px; cursor:pointer; accent-color:#1d1d1f; }
+  .compare-bar {
+    position:fixed; left:50%; transform:translateX(-50%); bottom:20px; z-index:200;
+    background:#1d1d1f; color:#fff; border-radius:12px; padding:10px 16px;
+    display:flex; align-items:center; gap:14px; box-shadow:0 6px 24px rgba(0,0,0,.25);
+    font-size:13px; max-width:90vw;
+  }
+  .compare-bar.hidden { display:none; }
+  .compare-bar .cb-names { opacity:.85; max-width:46vw; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .compare-bar button {
+    border:none; border-radius:8px; padding:6px 14px; font-size:13px; cursor:pointer; font-family:inherit;
+  }
+  .cb-go { background:#fff; color:#1d1d1f; font-weight:600; }
+  .cb-go:disabled { opacity:.4; cursor:not-allowed; }
+  .cb-clear { background:transparent; color:#fff; opacity:.8; }
+  .cb-clear:hover { opacity:1; }
+  /* v2.0: 对比弹窗 */
+  .cmp-mask { position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:300; display:flex; align-items:center; justify-content:center; padding:24px; }
+  .cmp-mask.hidden { display:none; }
+  .cmp-modal { background:#fff; border-radius:14px; max-width:960px; width:100%; max-height:88vh; overflow:auto; padding:24px; position:relative; }
+  .cmp-modal h2 { font-size:17px; font-weight:700; margin-bottom:16px; }
+  .cmp-close { position:absolute; top:16px; right:18px; border:none; background:transparent; font-size:22px; cursor:pointer; color:var(--text-tertiary); line-height:1; }
+  .cmp-shapes { display:flex; gap:22px; flex-wrap:wrap; justify-content:center; margin-bottom:22px; }
+  .cmp-shape-item { text-align:center; font-size:12px; color:var(--text-secondary); }
+  .cmp-shape-item .cmp-shape-name { font-weight:600; color:var(--text-primary); margin-top:8px; font-size:12px; }
+  .cmp-table { width:100%; border-collapse:collapse; font-size:13px; }
+  .cmp-table th, .cmp-table td { padding:8px 10px; border-bottom:1px solid #f0f0f0; text-align:left; white-space:nowrap; }
+  .cmp-table thead th { background:#fafafa; font-size:11px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:.5px; position:sticky; top:0; }
+  .cmp-table td.metric { color:var(--text-secondary); font-weight:500; }
+  .cmp-table td.best { color:#137333; font-weight:600; }
+  /* 屏幕轮廓缩略图 */
+  .scr-thumb { display:inline-block; vertical-align:middle; }
+  .scr-frame { fill:#1d1d1f; }
+  .scr-screen { fill:#cfe8ff; }
+  /* 最后更新提示 */
+  .update-note { color:var(--text-tertiary); }
 </style>
 </head>
 <body>
 
 <div class="header">
   <div class="header-inner">
-    <h1>移动设备参数概览 <span style="font-size:13px;font-weight:400;color:var(--text-tertiary)">v1.9</span></h1>
-    <p>2020-2026 年 | 覆盖手机、折叠屏、平板三大品类 | 华为、苹果、三星、小米、OPPO、vivo、荣耀、摩托罗拉、Google、联想 | 数据截至 2026年5月</p>
+    <h1>移动设备参数概览 <span style="font-size:13px;font-weight:400;color:var(--text-tertiary)">v2.0</span></h1>
+    <p>2020-2026 年 | 覆盖手机、折叠屏、平板三大品类 | 华为、苹果、三星、小米、OPPO、vivo、荣耀、摩托罗拉、Google、联想 <span class="update-note" id="updateNote">| 最后更新 2026-06-26</span></p>
     <div class="cat-tabs">
       <div class="cat-tab active" data-cat="phone">📱 手机</div>
       <div class="cat-tab" data-cat="foldable">📲 折叠屏</div>
@@ -887,6 +925,7 @@ let minH = null;
 let maxH = null;
 let sortKey = null;   // 当前排序列
 let sortDir = 1;      // 1 升序, -1 降序
+const selected = new Map();  // v2.0: key=brand|name -> device 对象
 
 // ==================== INSIGHT RENDERING ====================
 
@@ -1190,7 +1229,7 @@ function filterFoldables(filterKey) {
   return FOLDABLES.filter(d => d.type === filterKey);
 }
 
-// ==================== 异常值统计（v1.9） ====================
+// ==================== 异常值统计（v2.0） ====================
 // 口径：全部设备（手机+平板+折叠屏）混合对比；某指标偏离均值±2倍标准差则计为异常。
 const ANOMALY_METRICS = [
   { key:'ratio', label:'\u5bbd\u9ad8\u6bd4', get:d => (d.w && d.h) ? (Math.max(d.w,d.h)/Math.min(d.w,d.h)) : null },
@@ -1235,6 +1274,24 @@ function diffDot(dir, label) {
   return ` <span class="diff-dot" title="\u6b64\u53c2\u6570\u4e0e\u5927\u90e8\u5206\u8bbe\u5907\u5dee\u5f02\u8f83\u5927\uff1a${label}${dir}"></span>`;
 }
 
+// v2.0: 生成屏幕轮廓缩略图(按机身宽高与边框按比例画)
+function screenThumb(d, maxH) {
+  maxH = maxH || 26;
+  if (d.w==null || d.h==null) return '';
+  const longer = Math.max(d.w, d.h), shorter = Math.min(d.w, d.h);
+  const scale = maxH / longer;
+  const W = Math.round(shorter * scale), H = Math.round(longer * scale);
+  // 边框(有则用,无则默认细边)
+  const bt = (d.bt!=null?d.bt:1.5)*scale, bb=(d.bb!=null?d.bb:1.5)*scale, bl=(d.bl!=null?d.bl:1.5)*scale, br=(d.br!=null?d.br:1.5)*scale;
+  const sx = bl, sy = bt, sw = Math.max(1, W-bl-br), sh = Math.max(1, H-bt-bb);
+  const rad = Math.min(W,H)*0.16;
+  return `<svg class="scr-thumb" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">`+
+    `<rect class="scr-frame" x="0" y="0" width="${W}" height="${H}" rx="${rad}" ry="${rad}"/>`+
+    `<rect class="scr-screen" x="${sx}" y="${sy}" width="${sw}" height="${sh}" rx="${rad*0.6}" ry="${rad*0.6}"/>`+
+  `</svg>`;
+}
+function devKey(d){ return d.brand + '|' + d.name; }
+
 function renderContent() {
   let data;
   if (currentCat === "phone") data = PHONES;
@@ -1243,7 +1300,7 @@ function renderContent() {
     data = filterFoldables(currentFilter);
   }
 
-  // v1.9: apply keyword + size-range search
+  // v2.0: apply keyword + size-range search
   const hasSearch = (searchKw.trim() !== "") || (minSize != null) || (maxSize != null) || (minW != null) || (maxW != null) || (minH != null) || (maxH != null);
   data = applySearch(data);
 
@@ -1296,6 +1353,7 @@ function renderContent() {
     html += `<div class="brand-body"><table>`;
     html += `<thead>
       <tr>
+        <th class="sel-col">\u5BF9\u6BD4</th>
         <th class="sortable${sortKey==='name'?' sort-active':''}" data-sortkey="name">\u8BBE\u5907<span class="sort-arrow">${sortKey==='name'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
         <th class="sortable${sortKey==='year'?' sort-active':''}" data-sortkey="year">\u5E74\u4EFD<span class="sort-arrow">${sortKey==='year'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
         ${currentCat==="foldable"?'<th>\u7C7B\u578B</th>':""}
@@ -1314,14 +1372,17 @@ function renderContent() {
 
     devices.forEach(d => {
       html += `<tr>`;
-      // v1.9: 差异红点——按指标落到对应单元格，不放设备名旁
+      // v2.0: 差异红点——按指标落到对应单元格，不放设备名旁
       const am = getAnomalyMap(d);
       const dotPpi = diffDot(am.ppi, 'PPI');
       // 宽高比异常落到 机身宽 与 机身高 两格
       const dotW = diffDot(am.w || am.ratio, am.w ? (currentCat==="foldable"?'\u5C55\u5F00\u5BBD':'\u673A\u8EAB\u5BBD') : '\u5BBD\u9AD8\u6BD4');
       const dotH = diffDot(am.h || am.ratio, am.h ? (currentCat==="foldable"?'\u5C55\u5F00\u9AD8':'\u673A\u8EAB\u9AD8') : '\u5BBD\u9AD8\u6BD4');
       const dotBezel = diffDot(am.bezel, '\u8FB9\u6846');
-      html += `<td class="device-cell"><span class="device-name">${d.name}</span></td>`;
+      const _k = devKey(d);
+      const _checked = selected.has(_k) ? " checked" : "";
+      html += `<td class="sel-col"><input type="checkbox" class="row-check" data-k="${_k}"${_checked}></td>`;
+      html += `<td class="device-cell">${screenThumb(d)} <span class="device-name" style="vertical-align:middle">${d.name}</span></td>`;
       html += `<td class="num">${d.year}</td>`;
       if (currentCat === "foldable") {
         html += `<td><span class="type-tag ${TYPE_CLASS[d.type]}">${TYPE_MAP[d.type]}</span></td>`;
@@ -1344,7 +1405,7 @@ function renderContent() {
     html += `</tbody></table></div></div>`;
   });
 
-  // v1.9: no-result message
+  // v2.0: no-result message
   if (data.length === 0) {
     html += `<div class="no-result">\u6ca1\u6709\u7b26\u5408\u6761\u4ef6\u7684\u8bbe\u5907\uff0c\u8bf7\u8c03\u6574\u5173\u952e\u8bcd\u6216\u5c3a\u5bf8\u8303\u56f4\u3002</div>`;
   }
@@ -1381,7 +1442,24 @@ function renderContent() {
 
   html += `<div class="footnote">${note}</div>`;
   container.innerHTML = html;
-  // v1.9: 绑定可排序表头
+  // v2.0: 绑定选中复选框
+  container.querySelectorAll('.row-check').forEach(cb => {
+    cb.addEventListener('change', () => {
+      const k = cb.dataset.k;
+      if (cb.checked) {
+        const all = [].concat(PHONES, TABLETS, FOLDABLES);
+        const dev = all.find(d => devKey(d) === k);
+        if (dev) {
+          if (selected.size >= 4 && !selected.has(k)) { cb.checked = false; alert('\u6700\u591a\u5bf9\u6bd4 4 \u53f0\u8bbe\u5907'); return; }
+          selected.set(k, dev);
+        }
+      } else {
+        selected.delete(k);
+      }
+      renderCompareBar();
+    });
+  });
+  // v2.0: 绑定可排序表头
   container.querySelectorAll('th.sortable').forEach(th => {
     th.addEventListener('click', () => {
       const k = th.dataset.sortkey;
@@ -1456,6 +1534,76 @@ function renderFoldableTrend(devices) {
   return html;
 }
 
+// ==================== 设备对比（v2.0） ====================
+function renderCompareBar() {
+  let bar = document.getElementById('compareBar');
+  if (!bar) {
+    bar = document.createElement('div');
+    bar.id = 'compareBar';
+    bar.className = 'compare-bar hidden';
+    document.body.appendChild(bar);
+  }
+  if (selected.size === 0) { bar.className = 'compare-bar hidden'; return; }
+  const names = [...selected.values()].map(d => d.name).join('\u3001');
+  bar.className = 'compare-bar';
+  bar.innerHTML = `已选 <strong>${selected.size}</strong> 台`+
+    `<span class="cb-names">${names}</span>`+
+    `<button class="cb-go" id="cbGo"${selected.size<2?' disabled':''}>开始对比</button>`+
+    `<button class="cb-clear" id="cbClear">清空</button>`;
+  document.getElementById('cbGo').onclick = openCompare;
+  document.getElementById('cbClear').onclick = () => { selected.clear(); renderCompareBar(); renderContent(); };
+}
+function openCompare() {
+  if (selected.size < 2) return;
+  const devs = [...selected.values()];
+  const foldableInvolved = devs.some(d => d.type);
+  // 轮廓图
+  let shapes = '<div class="cmp-shapes">';
+  devs.forEach(d => {
+    shapes += `<div class="cmp-shape-item">${screenThumb(d, 150)}<div class="cmp-shape-name">${d.name}</div></div>`;
+  });
+  shapes += '</div>';
+  // 参数表
+  const rows = [
+    { label:'年份', get:d => d.year },
+    { label:(foldableInvolved?'屏幕尺寸(内屏)':'屏幕尺寸'), get:d => d.screen + '"' },
+    { label:'分辨率', get:d => d.res },
+    { label:'PPI', get:d => fmt(d.ppi), num:true, key:'ppi' },
+    { label:(foldableInvolved?'展开宽 (mm)':'机身宽 (mm)'), get:d => fmt(d.w) },
+    { label:(foldableInvolved?'展开高 (mm)':'机身高 (mm)'), get:d => fmt(d.h) },
+    { label:'上边框 (mm)', get:d => fmt(d.bt) },
+    { label:'下边框 (mm)', get:d => fmt(d.bb) },
+    { label:'左边框 (mm)', get:d => fmt(d.bl) },
+    { label:'右边框 (mm)', get:d => fmt(d.br) },
+    { label:'重量 (g)', get:d => fmt(d.weight), num:true, key:'weight', lowerBetter:true },
+  ];
+  let table = '<table class="cmp-table"><thead><tr><th>参数</th>';
+  devs.forEach(d => { table += `<th>${d.name}</th>`; });
+  table += '</tr></thead><tbody>';
+  rows.forEach(r => {
+    table += `<tr><td class="metric">${r.label}</td>`;
+    // 高亮最优（仅 PPI 高优、重量低优）
+    let bestIdx = -1;
+    if (r.num) {
+      let bestVal = null;
+      devs.forEach((d,i) => { const v=Number(d[r.key]); if(isNaN(v))return; if(bestVal==null||(r.lowerBetter? v<bestVal : v>bestVal)){bestVal=v;bestIdx=i;} });
+    }
+    devs.forEach((d,i) => { table += `<td class="${i===bestIdx?'best':''}">${r.get(d)}</td>`; });
+    table += '</tr>';
+  });
+  table += '</tbody></table>';
+  let mask = document.getElementById('cmpMask');
+  if (!mask) {
+    mask = document.createElement('div');
+    mask.id = 'cmpMask'; mask.className = 'cmp-mask hidden';
+    document.body.appendChild(mask);
+    mask.addEventListener('click', e => { if (e.target === mask) mask.className='cmp-mask hidden'; });
+  }
+  mask.innerHTML = `<div class="cmp-modal"><button class="cmp-close" onclick="document.getElementById('cmpMask').className='cmp-mask hidden'">\u00D7</button>`+
+    `<h2>\u8bbe\u5907\u5bf9\u6bd4\uff08\u6309\u673a\u8eab\u6bd4\u4f8b\u7ed8\u5236\uff0c\u542b\u9ed1\u8fb9\uff09</h2>`+ shapes + table + `</div>`;
+  mask.className = 'cmp-mask';
+}
+
 function toggleBrand(el) {
   el.closest(".brand-section").classList.toggle("collapsed");
 }
@@ -1470,13 +1618,14 @@ document.querySelectorAll(".cat-tab").forEach(tab => {
     currentFilter = "all";
     searchKw = ""; minSize = null; maxSize = null; minW = null; maxW = null; minH = null; maxH = null;
     sortKey = null; sortDir = 1;
+    selected.clear();
     renderStats();
     renderFilterBar();
     renderContent();
   });
 });
 
-// ==================== STICKY OFFSET SYNC (v1.9) ====================
+// ==================== STICKY OFFSET SYNC (v2.0) ====================
 // 让筛选/搜索栏吸顶时正好贴在 header 下方：把 header 实际高度写入 --header-h
 function syncHeaderHeight() {
   const header = document.querySelector(".header");
@@ -1491,6 +1640,7 @@ window.addEventListener("load", syncHeaderHeight);
 renderStats();
 renderFilterBar();
 renderContent();
+renderCompareBar();
 syncHeaderHeight();
 // 渲染后 header 高度可能变化，再同步一次
 setTimeout(syncHeaderHeight, 0);
