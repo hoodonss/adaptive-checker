@@ -333,11 +333,10 @@
   /* Table */
   .brand-body { overflow-x: auto; }
   .bezel-cell-tag { display:inline-block; margin-left:4px; font-size:10px; padding:0 5px; border-radius:4px; vertical-align:middle; }
-  /* v1.9: 异常值标记 */
-  .anomaly-tag {
-    display:inline-block; margin-left:6px; padding:1px 7px; border-radius:10px;
-    background:#fdecea; color:#c0392b; font-size:10px; font-weight:600;
-    vertical-align:middle; cursor:help; white-space:nowrap;
+  /* v1.9: 参数差异红点 */
+  .diff-dot {
+    display:inline-block; width:7px; height:7px; border-radius:50%;
+    background:#e3342f; vertical-align:middle; margin-left:5px; cursor:help;
   }
   table {
     width: 100%;
@@ -1214,10 +1213,10 @@ function buildAnomalyStats() {
   });
   ANOMALY_STATS = stats;
 }
-// 返回某设备的异常指标描述数组
-function getAnomalies(d) {
+// 返回某设备各指标是否差异过大的映射：{ key: '偏高'|'偏低' }
+function getAnomalyMap(d) {
   if (!ANOMALY_STATS) buildAnomalyStats();
-  const out = [];
+  const map = {};
   ANOMALY_METRICS.forEach(m => {
     const v = m.get(d);
     if (v==null || isNaN(v)) return;
@@ -1225,10 +1224,15 @@ function getAnomalies(d) {
     if (!s || s.sd === 0) return;
     const z = (v - s.mean) / s.sd;
     if (Math.abs(z) >= 2) {
-      out.push(m.label + (z>0 ? '\u504f\u9ad8' : '\u504f\u4f4e'));
+      map[m.key] = (z>0 ? '\u504f\u9ad8' : '\u504f\u4f4e');
     }
   });
-  return out;
+  return map;
+}
+// 生成红点 HTML：dir 为 '偏高'/'偏低'，label 为指标名（用于悬停说明）
+function diffDot(dir, label) {
+  if (!dir) return "";
+  return ` <span class="diff-dot" title="\u6b64\u53c2\u6570\u4e0e\u5927\u90e8\u5206\u8bbe\u5907\u5dee\u5f02\u8f83\u5927\uff1a${label}${dir}"></span>`;
 }
 
 function renderContent() {
@@ -1310,21 +1314,26 @@ function renderContent() {
 
     devices.forEach(d => {
       html += `<tr>`;
-      const anomalies = getAnomalies(d);
-      const anomalyTag = anomalies.length ? ` <span class="anomaly-tag" title="\u4e0e\u5168\u4f53\u8bbe\u5907\u5dee\u5f02\u8fc7\u5927\uff08\u8de8\u54c1\u7c7b\u5bf9\u6bd4\uff09\uff1a${anomalies.join("\u3001")}">\u26A0 \u5f02\u5e38</span>` : "";
-      html += `<td class="device-cell"><span class="device-name">${d.name}</span>${anomalyTag}</td>`;
+      // v1.9: 差异红点——按指标落到对应单元格，不放设备名旁
+      const am = getAnomalyMap(d);
+      const dotPpi = diffDot(am.ppi, 'PPI');
+      // 宽高比异常落到 机身宽 与 机身高 两格
+      const dotW = diffDot(am.w || am.ratio, am.w ? (currentCat==="foldable"?'\u5C55\u5F00\u5BBD':'\u673A\u8EAB\u5BBD') : '\u5BBD\u9AD8\u6BD4');
+      const dotH = diffDot(am.h || am.ratio, am.h ? (currentCat==="foldable"?'\u5C55\u5F00\u9AD8':'\u673A\u8EAB\u9AD8') : '\u5BBD\u9AD8\u6BD4');
+      const dotBezel = diffDot(am.bezel, '\u8FB9\u6846');
+      html += `<td class="device-cell"><span class="device-name">${d.name}</span></td>`;
       html += `<td class="num">${d.year}</td>`;
       if (currentCat === "foldable") {
         html += `<td><span class="type-tag ${TYPE_CLASS[d.type]}">${TYPE_MAP[d.type]}</span></td>`;
       }
       html += `<td class="num">${d.screen}"</td>`;
       html += `<td class="num">${d.res}</td>`;
-      html += `<td class="num">${fmt(d.ppi)}</td>`;
-      html += `<td class="num">${fmt(d.w)}</td>`;
-      html += `<td class="num">${fmt(d.h)}</td>`;
-      // v1.9: bezel source moved to grouped header (default 估算). Only flag rows that are NOT 估算 (待补/缺失) inline.
+      html += `<td class="num">${fmt(d.ppi)}${dotPpi}</td>`;
+      html += `<td class="num">${fmt(d.w)}${dotW}</td>`;
+      html += `<td class="num">${fmt(d.h)}${dotH}</td>`;
+      // bezel source 标签（待补/缺失）保留在上边框格
       const btTag = (d.bezel_src && d.bezel_src !== "est") ? (' <span class="bezel-cell-tag src-'+d.bezel_src+'">'+SRC_MAP[d.bezel_src]+'</span>') : "";
-      html += `<td class="num">${fmt(d.bt)}${btTag}</td>`;
+      html += `<td class="num">${fmt(d.bt)}${dotBezel}${btTag}</td>`;
       html += `<td class="num">${fmt(d.bb)}</td>`;
       html += `<td class="num">${fmt(d.bl)}</td>`;
       html += `<td class="num">${fmt(d.br)}</td>`;
@@ -1365,9 +1374,10 @@ function renderContent() {
   note += '<br>• <span class="src-tag src-missing">缺失</span> 表示原始分辨率/PPI/机身尺寸口径不一致、反推出现负值或明显失真，故留空';
   note += '<br>• 原始机身宽/高为含边框的整机尺寸，故边框为“含机身中框”的视觉黑边近似值，仅供 UI 适配参考';
   note += '<br>• <span class="src-tag src-todo">待补</span> 表示该设备已发布/即将发布但官方尚未公布完整参数，已先列入，参数待后续补录';
-  note += '<br><br><strong>异常标记说明：</strong>';
-  note += '<br>• <span class="anomaly-tag">⚠ 异常</span> 表示该设备在<strong>宽高比 / PPI / 边框 / 机身宽 / 机身高</strong>中至少一项，与<strong>全部设备（手机+平板+折叠屏混合）</strong>的均值偏离超过 ±2 倍标准差（统计离群值）';
-  note += '<br>• 鼠标悬停标签可查看具体哪项指标异常。因采用跨品类混合口径，平板/折叠屏因形态差异较易被标记，属正常现象';
+  note += '<br><br><strong>参数差异提示：</strong>';
+  note += '<br>• 单元格内的<span class="diff-dot"></span>红点表示<strong>该项参数</strong>（宽高比 / PPI / 边框 / 机身宽 / 机身高）与<strong>全部设备（手机+平板+折叠屏混合）</strong>的均值偏离较大（超过 ±2 倍标准差）';
+  note += '<br>• 红点直接落在对应数值旁，鼠标悬停可查看是偏高还是偏低。宽高比差异会同时标在机身宽、机身高两格';
+  note += '<br>• 因采用跨品类混合口径，平板/折叠屏因形态差异较易出现红点，属正常现象';
 
   html += `<div class="footnote">${note}</div>`;
   container.innerHTML = html;
