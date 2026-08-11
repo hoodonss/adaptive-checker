@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>移动设备参数概览 v2.6（2020-2026）</title>
+<title>移动设备参数概览 v2.7（2020-2026）</title>
 <style>
   :root {
     --bg: #f5f5f7;
@@ -334,7 +334,7 @@
   .brand-body { overflow-x: auto; }
   .bezel-cell-tag { display:inline-block; margin-left:4px; font-size:10px; padding:0 5px; border-radius:4px; vertical-align:middle; }
   /* v2.1: 参数差异红点 */
-  /* v2.6: mm 格内附 dp 小字 */
+  /* v2.7: mm 格内附 dp 小字 */
   .dp-sub { display:block; font-size:10px; color:#aeaeb2; line-height:1.2; margin-top:1px; font-variant-numeric:tabular-nums; }
   .diff-dot {
     display:inline-block; width:7px; height:7px; border-radius:50%;
@@ -552,7 +552,7 @@
 
 <div class="header">
   <div class="header-inner">
-    <h1>移动设备参数概览 <span style="font-size:13px;font-weight:400;color:var(--text-tertiary)">v2.6</span></h1>
+    <h1>移动设备参数概览 <span style="font-size:13px;font-weight:400;color:var(--text-tertiary)">v2.7</span></h1>
     <p>2020-2026 年 | 覆盖手机、折叠屏、平板三大品类 | 华为、苹果、三星、小米、OPPO、vivo、荣耀、摩托罗拉、Google、联想 <span class="update-note" id="updateNote">| 最后更新 2026-07-31</span></p>
     <div class="cat-tabs">
       <div class="cat-tab active" data-cat="phone">📱 手机</div>
@@ -1357,7 +1357,7 @@ function screenThumb(d, maxH, withCamera) {
   `</svg>`;
 }
 function devKey(d){ return d.brand + '|' + d.name; }
-// v2.6: 物理 mm → dp（按各机 PPI 还原像素再换算；ppi 缺失则无法换算）
+// v2.7: 物理 mm → dp（按各机 PPI 还原像素再换算；ppi 缺失则无法换算）
 function mmToDp(mm, ppi) {
   if (mm==null || isNaN(mm) || ppi==null || isNaN(ppi) || ppi<=0) return null;
   const px = mm * ppi / 25.4;        // mm 还原为物理像素
@@ -1367,6 +1367,19 @@ function mmToDp(mm, ppi) {
 // 生成 mm 值下方的 dp 小字（无 dp 则不显示）
 function dpSub(mm, ppi) {
   const v = mmToDp(mm, ppi);
+  return v==null ? '' : `<span class="dp-sub">${v}dp</span>`;
+}
+// 分辨率字符串(像素)按 PPI 换算为 dp，保持原始长×短顺序
+function resToDp(res, ppi) {
+  if (!res || ppi==null || isNaN(ppi) || ppi<=0) return null;
+  const parts = String(res).split(/[×xX]/).map(s => parseInt(s.trim(), 10));
+  if (parts.length !== 2 || parts.some(p => isNaN(p) || p<=0)) return null;
+  const scale = 160 / ppi;                       // 像素 → dp
+  return parts.map(p => Math.round(p * scale)).join('\u00d7');
+}
+// 生成分辨率值下方的 dp 小字（无 dp 则不显示）
+function resDpSub(res, ppi) {
+  const v = resToDp(res, ppi);
   return v==null ? '' : `<span class="dp-sub">${v}dp</span>`;
 }
 
@@ -1444,7 +1457,7 @@ function renderContent() {
         <th class="sortable${sortKey==='year'?' sort-active':''}" data-sortkey="year">\u5E74\u4EFD<span class="sort-arrow">${sortKey==='year'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
         ${currentCat==="foldable"?'<th>\u7C7B\u578B</th>':""}
         <th class="sortable${sortKey==='screen'?' sort-active':''}" data-sortkey="screen">${currentCat==="foldable"?"\u5185\u5C4F\u5C3A\u5BF8":"\u5C4F\u5E55\u5C3A\u5BF8"}<span class="sort-arrow">${sortKey==='screen'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
-        <th>\u5206\u8FA8\u7387</th>
+        <th>\u5206\u8FA8\u7387<span style="color:#aeaeb2;font-weight:400"> /dp</span></th>
         <th class="sortable${sortKey==='ppi'?' sort-active':''}" data-sortkey="ppi">PPI<span class="sort-arrow">${sortKey==='ppi'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
         <th class="sortable${sortKey==='w'?' sort-active':''}" data-sortkey="w">${currentCat==="foldable"?"\u5C55\u5F00\u5BBD (mm)":"\u673A\u8EAB\u5BBD (mm)"}<span style="color:#aeaeb2;font-weight:400"> /dp</span><span class="sort-arrow">${sortKey==='w'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
         <th class="sortable${sortKey==='h'?' sort-active':''}" data-sortkey="h">${currentCat==="foldable"?"\u5C55\u5F00\u9AD8 (mm)":"\u673A\u8EAB\u9AD8 (mm)"}<span style="color:#aeaeb2;font-weight:400"> /dp</span><span class="sort-arrow">${sortKey==='h'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
@@ -1476,7 +1489,7 @@ function renderContent() {
         html += `<td><span class="type-tag ${TYPE_CLASS[d.type]}">${TYPE_MAP[d.type]}</span></td>`;
       }
       html += `<td class="num">${d.screen}"</td>`;
-      html += `<td class="num">${d.res}</td>`;
+      html += `<td class="num">${d.res}${resDpSub(d.res, d.ppi)}</td>`;
       html += `<td class="num">${fmt(d.ppi)}${dotPpi}</td>`;
       html += `<td class="num">${fmt(d.w)}${dotW}${dpSub(d.w, d.ppi)}</td>`;
       html += `<td class="num">${fmt(d.h)}${dotH}${dpSub(d.h, d.ppi)}</td>`;
@@ -1664,7 +1677,7 @@ function openCompare() {
   const rows = [
     { label:'年份', get:d => d.year },
     { label:(foldableInvolved?'屏幕尺寸(内屏)':'屏幕尺寸'), get:d => d.screen + '"' },
-    { label:'分辨率', get:d => d.res },
+    { label:'分辨率', get:d => { const dp=resToDp(d.res,d.ppi); return dp==null?d.res:(d.res+' <span style="color:#aeaeb2;font-size:11px">'+dp+'dp</span>'); } },
     { label:'PPI', get:d => fmt(d.ppi), num:true, key:'ppi' },
     { label:(foldableInvolved?'展开宽 (mm)':'机身宽 (mm)'), get:d => { const v=fmt(d.w); const dp=mmToDp(d.w,d.ppi); return dp==null?v:(v+' <span style="color:#aeaeb2;font-size:11px">'+dp+'dp</span>'); } },
     { label:(foldableInvolved?'展开高 (mm)':'机身高 (mm)'), get:d => { const v=fmt(d.h); const dp=mmToDp(d.h,d.ppi); return dp==null?v:(v+' <span style="color:#aeaeb2;font-size:11px">'+dp+'dp</span>'); } },
