@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>移动设备参数概览 v2.5（2020-2026）</title>
+<title>移动设备参数概览 v2.6（2020-2026）</title>
 <style>
   :root {
     --bg: #f5f5f7;
@@ -334,7 +334,7 @@
   .brand-body { overflow-x: auto; }
   .bezel-cell-tag { display:inline-block; margin-left:4px; font-size:10px; padding:0 5px; border-radius:4px; vertical-align:middle; }
   /* v2.1: 参数差异红点 */
-  /* v2.5: mm 格内附 dp 小字 */
+  /* v2.6: mm 格内附 dp 小字 */
   .dp-sub { display:block; font-size:10px; color:#aeaeb2; line-height:1.2; margin-top:1px; font-variant-numeric:tabular-nums; }
   .diff-dot {
     display:inline-block; width:7px; height:7px; border-radius:50%;
@@ -552,7 +552,7 @@
 
 <div class="header">
   <div class="header-inner">
-    <h1>移动设备参数概览 <span style="font-size:13px;font-weight:400;color:var(--text-tertiary)">v2.5</span></h1>
+    <h1>移动设备参数概览 <span style="font-size:13px;font-weight:400;color:var(--text-tertiary)">v2.6</span></h1>
     <p>2020-2026 年 | 覆盖手机、折叠屏、平板三大品类 | 华为、苹果、三星、小米、OPPO、vivo、荣耀、摩托罗拉、Google、联想 <span class="update-note" id="updateNote">| 最后更新 2026-07-31</span></p>
     <div class="cat-tabs">
       <div class="cat-tab active" data-cat="phone">📱 手机</div>
@@ -1357,7 +1357,7 @@ function screenThumb(d, maxH, withCamera) {
   `</svg>`;
 }
 function devKey(d){ return d.brand + '|' + d.name; }
-// v2.5: 物理 mm → dp（按各机 PPI 还原像素再换算；ppi 缺失则无法换算）
+// v2.6: 物理 mm → dp（按各机 PPI 还原像素再换算；ppi 缺失则无法换算）
 function mmToDp(mm, ppi) {
   if (mm==null || isNaN(mm) || ppi==null || isNaN(ppi) || ppi<=0) return null;
   const px = mm * ppi / 25.4;        // mm 还原为物理像素
@@ -1414,6 +1414,10 @@ function renderContent() {
           va = (a.w!=null && a.h!=null && Math.min(a.w,a.h)>0) ? (Math.max(a.w,a.h)/Math.min(a.w,a.h)) : null;
           vb = (b.w!=null && b.h!=null && Math.min(b.w,b.h)>0) ? (Math.max(b.w,b.h)/Math.min(b.w,b.h)) : null;
         }
+        if (sortKey === 'whratio') {
+          va = (a.w!=null && a.h!=null && a.h>0) ? (a.w/a.h) : null;
+          vb = (b.w!=null && b.h!=null && b.h>0) ? (b.w/b.h) : null;
+        }
         const na = (va==null||va===''||isNaN(va)) ? null : Number(va);
         const nb = (vb==null||vb===''||isNaN(vb)) ? null : Number(vb);
         if (na==null && nb==null) return 0;
@@ -1445,6 +1449,7 @@ function renderContent() {
         <th class="sortable${sortKey==='w'?' sort-active':''}" data-sortkey="w">${currentCat==="foldable"?"\u5C55\u5F00\u5BBD (mm)":"\u673A\u8EAB\u5BBD (mm)"}<span style="color:#aeaeb2;font-weight:400"> /dp</span><span class="sort-arrow">${sortKey==='w'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
         <th class="sortable${sortKey==='h'?' sort-active':''}" data-sortkey="h">${currentCat==="foldable"?"\u5C55\u5F00\u9AD8 (mm)":"\u673A\u8EAB\u9AD8 (mm)"}<span style="color:#aeaeb2;font-weight:400"> /dp</span><span class="sort-arrow">${sortKey==='h'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
         <th class="sortable${sortKey=='ratio'?' sort-active':''}" data-sortkey="ratio">\u9AD8\u5BBD\u6BD4<span class="sort-arrow">${sortKey=='ratio'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
+        <th class="sortable${sortKey=='whratio'?' sort-active':''}" data-sortkey="whratio">\u5BBD\u9AD8\u6BD4<span class="sort-arrow">${sortKey=='whratio'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
         <th class="sortable bezel-col${sortKey==='bt'?' sort-active':''}" data-sortkey="bt">\u4E0A\u8FB9\u6846 (mm)<span style="color:#aeaeb2;font-weight:400"> /dp</span><span class="sort-arrow">${sortKey==='bt'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span><br><span class="bezel-est-badge">\u4F30\u7B97</span></th>
         <th class="sortable bezel-col${sortKey==='bb'?' sort-active':''}" data-sortkey="bb">\u4E0B\u8FB9\u6846 (mm)<span style="color:#aeaeb2;font-weight:400"> /dp</span><span class="sort-arrow">${sortKey==='bb'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span><br><span class="bezel-est-badge">\u4F30\u7B97</span></th>
         <th class="sortable bezel-col${sortKey==='bl'?' sort-active':''}" data-sortkey="bl">\u5DE6\u8FB9\u6846 (mm)<span style="color:#aeaeb2;font-weight:400"> /dp</span><span class="sort-arrow">${sortKey==='bl'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span><br><span class="bezel-est-badge">\u4F30\u7B97</span></th>
@@ -1477,6 +1482,8 @@ function renderContent() {
       html += `<td class="num">${fmt(d.h)}${dotH}${dpSub(d.h, d.ppi)}</td>`;
       const _ratio = (d.w!=null && d.h!=null && Math.min(d.w,d.h)>0) ? (Math.max(d.w,d.h)/Math.min(d.w,d.h)) : null;
       html += `<td class="num">${_ratio!=null ? _ratio.toFixed(2) : '\u2014'}</td>`;
+      const _whr = (d.w!=null && d.h!=null && d.h>0) ? (d.w/d.h) : null;
+      html += `<td class="num">${_whr!=null ? _whr.toFixed(2) : '\u2014'}</td>`;
       // bezel source 标签（待补/缺失）保留在上边框格
       const btTag = (d.bezel_src && d.bezel_src !== "est") ? (' <span class="bezel-cell-tag src-'+d.bezel_src+'">'+SRC_MAP[d.bezel_src]+'</span>') : "";
       html += `<td class="num">${fmt(d.bt)}${dotBezel}${btTag}${dpSub(d.bt, d.ppi)}</td>`;
@@ -1662,6 +1669,7 @@ function openCompare() {
     { label:(foldableInvolved?'展开宽 (mm)':'机身宽 (mm)'), get:d => { const v=fmt(d.w); const dp=mmToDp(d.w,d.ppi); return dp==null?v:(v+' <span style="color:#aeaeb2;font-size:11px">'+dp+'dp</span>'); } },
     { label:(foldableInvolved?'展开高 (mm)':'机身高 (mm)'), get:d => { const v=fmt(d.h); const dp=mmToDp(d.h,d.ppi); return dp==null?v:(v+' <span style="color:#aeaeb2;font-size:11px">'+dp+'dp</span>'); } },
     { label:'高宽比', get:d => (d.w!=null && d.h!=null && Math.min(d.w,d.h)>0) ? (Math.max(d.w,d.h)/Math.min(d.w,d.h)).toFixed(2) : '—' },
+    { label:'宽高比', get:d => (d.w!=null && d.h!=null && d.h>0) ? (d.w/d.h).toFixed(2) : '—' },
     { label:'上边框 (mm)', get:d => { const v=fmt(d.bt); const dp=mmToDp(d.bt,d.ppi); return dp==null?v:(v+' <span style="color:#aeaeb2;font-size:11px">'+dp+'dp</span>'); } },
     { label:'下边框 (mm)', get:d => { const v=fmt(d.bb); const dp=mmToDp(d.bb,d.ppi); return dp==null?v:(v+' <span style="color:#aeaeb2;font-size:11px">'+dp+'dp</span>'); } },
     { label:'左边框 (mm)', get:d => { const v=fmt(d.bl); const dp=mmToDp(d.bl,d.ppi); return dp==null?v:(v+' <span style="color:#aeaeb2;font-size:11px">'+dp+'dp</span>'); } },
