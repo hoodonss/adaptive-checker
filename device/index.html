@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>移动设备参数概览 v2.1（2020-2026）</title>
+<title>移动设备参数概览 v2.4（2020-2026）</title>
 <style>
   :root {
     --bg: #f5f5f7;
@@ -334,6 +334,8 @@
   .brand-body { overflow-x: auto; }
   .bezel-cell-tag { display:inline-block; margin-left:4px; font-size:10px; padding:0 5px; border-radius:4px; vertical-align:middle; }
   /* v2.1: 参数差异红点 */
+  /* v2.4: mm 格内附 dp 小字 */
+  .dp-sub { display:block; font-size:10px; color:#aeaeb2; line-height:1.2; margin-top:1px; font-variant-numeric:tabular-nums; }
   .diff-dot {
     display:inline-block; width:7px; height:7px; border-radius:50%;
     background:#e3342f; vertical-align:middle; margin-left:5px; cursor:help;
@@ -550,8 +552,8 @@
 
 <div class="header">
   <div class="header-inner">
-    <h1>移动设备参数概览 <span style="font-size:13px;font-weight:400;color:var(--text-tertiary)">v2.1</span></h1>
-    <p>2020-2026 年 | 覆盖手机、折叠屏、平板三大品类 | 华为、苹果、三星、小米、OPPO、vivo、荣耀、摩托罗拉、Google、联想 <span class="update-note" id="updateNote">| 最后更新 2026-06-26</span></p>
+    <h1>移动设备参数概览 <span style="font-size:13px;font-weight:400;color:var(--text-tertiary)">v2.4</span></h1>
+    <p>2020-2026 年 | 覆盖手机、折叠屏、平板三大品类 | 华为、苹果、三星、小米、OPPO、vivo、荣耀、摩托罗拉、Google、联想 <span class="update-note" id="updateNote">| 最后更新 2026-07-31</span></p>
     <div class="cat-tabs">
       <div class="cat-tab active" data-cat="phone">📱 手机</div>
       <div class="cat-tab" data-cat="foldable">📲 折叠屏</div>
@@ -715,6 +717,17 @@ const PHONES = [
   { brand:"google", name:"Pixel 9 Pro XL", year:2024, screen:6.8, res:"2992×1344", ppi:486, w:76.6, h:162.8, weight:221, bt:3.2, bb:3.2, bl:3.2, br:3.2, bezel_src:"est" },
   { brand:"xiaomi", name:"REDMI 17C", year:2026, screen:6.88, res:"1640×720", ppi:260, w:77.8, h:171.88, weight:206, bt:5.8, bb:5.8, bl:3.7, br:3.7, bezel_src:"est" },
   { brand:"lenovo", name:"moto S50 Neo", year:2026, screen:6.6, res:null, ppi:null, w:null, h:null, weight:null, bt:null, bb:null, bl:null, br:null, bezel_src:"todo" },
+  { brand:"huawei", name:"nova 16", year:2026, screen:6.68, res:"2800x1280", ppi:461, w:75.5, h:159.6, weight:199, bt:2.7, bb:2.7, bl:2.5, br:2.5, bezel_src:"est" },
+  { brand:"huawei", name:"nova 16 Pro", year:2026, screen:6.84, res:"2856x1320", ppi:458, w:78, h:163, weight:218, bt:2.3, bb:2.3, bl:2.4, br:2.4, bezel_src:"est" },
+  { brand:"huawei", name:"nova 16 Ultra", year:2026, screen:6.84, res:"2856x1320", ppi:458, w:78, h:163, weight:220, bt:2.3, bb:2.3, bl:2.4, br:2.4, bezel_src:"est" },
+  { brand:"huawei", name:"nova 16z", year:2026, screen:6.7, res:"2412x1084", ppi:394, w:75.47, h:161.79, weight:196.5, bt:3.1, bb:3.1, bl:2.8, br:2.8, bezel_src:"est" },
+  { brand:"xiaomi", name:"小米17T", year:2026, screen:6.59, res:"2756x1268", ppi:460, w:75.19, h:157.63, weight:203, bt:2.7, bb:2.7, bl:2.6, br:2.6, bezel_src:"est" },
+  { brand:"xiaomi", name:"小米17T Pro", year:2026, screen:6.83, res:"2772x1280", ppi:447, w:77.5, h:162.2, weight:219, bt:2.3, bb:2.3, bl:2.4, br:2.4, bezel_src:"est" },
+  { brand:"oppo", name:"Reno16", year:2026, screen:6.32, res:"2640x1216", ppi:460, w:72.42, h:151.21, weight:191, bt:2.7, bb:2.7, bl:2.6, br:2.6, bezel_src:"est" },
+  { brand:"oppo", name:"Reno16 Pro", year:2026, screen:6.78, res:"2772x1272", ppi:450, w:76.46, h:161.31, weight:208, bt:2.4, bb:2.4, bl:2.3, br:2.3, bezel_src:"est" },
+  { brand:"xiaomi", name:"REDMI K90 至尊版", year:2026, screen:6.83, res:"2772x1280", ppi:447, w:77.93, h:162.91, weight:227, bt:2.7, bb:2.7, bl:2.6, br:2.6, bezel_src:"est" },
+  { brand:"xiaomi", name:"REDMI Note 17 Pro", year:2026, screen:6.83, res:"2772x1280", ppi:447, w:78.3, h:163.5, weight:226, bt:3.0, bb:3.0, bl:2.8, br:2.8, bezel_src:"est" },
+  { brand:"xiaomi", name:"REDMI Note 17", year:2026, screen:7.0, res:"2396x1080", ppi:388, w:79.14, h:169.7, weight:225, bt:6.4, bb:6.4, bl:4.2, br:4.2, bezel_src:"est" },
 ];
 
 // ---- 平板数据 ----
@@ -802,6 +815,9 @@ const TABLETS = [
   { brand:"lenovo", name:"Xiaoxin Pad Pro 12.7 (2023)", year:2023, screen:12.7, res:"2944×1840", ppi:272, w:188, h:289, weight:615, bt:7.0, bb:7.0, bl:8.1, br:8.1, bezel_src:"est" },
   { brand:"lenovo", name:"Xiaoxin Pad Pro 12.7 (2024)", year:2024, screen:12.7, res:"2944×1840", ppi:272, w:188, h:289, weight:615, bt:7.0, bb:7.0, bl:8.1, br:8.1, bezel_src:"est" },
   { brand:"lenovo", name:"Tab P12 Pro (2022)", year:2022, screen:12.6, res:"2560×1600", ppi:240, w:185.6, h:287.6, weight:565, bt:8.3, bb:8.3, bl:8.1, br:8.1, bezel_src:"est" },
+  { brand:"oppo", name:"OPPO Pad 6 (2026)", year:2026, screen:12.1, res:"3000x2120", ppi:303, w:189, h:267, weight:577, bt:7.8, bb:7.8, bl:5.6, br:5.6, bezel_src:"est" },
+  { brand:"lenovo", name:"Tab Plus 2代 (2026)", year:2026, screen:12.1, res:"2560x1600", ppi:247, w:null, h:null, weight:null, bt:null, bb:null, bl:null, br:null, bezel_src:"todo" },
+  { brand:"lenovo", name:"Moto Pad 70 Pro (2026)", year:2026, screen:13, res:"3504x2190", ppi:318, w:null, h:null, weight:589, bt:null, bb:null, bl:null, br:null, bezel_src:"todo" },
 ];
 
 // ---- 折叠屏数据 ----
@@ -870,7 +886,10 @@ const FOLDABLES = [
   { brand:"motorola", name:"Razr Fold", year:2026, type:"h", screen:8.1, res:"2232×2484", ppi:410, w:146, h:161, weight:243, bt:3.6, bb:3.6, bl:3.9, br:3.9, bezel_src:"est" },
   { brand:"google", name:"Pixel Fold", year:2023, type:"h", screen:7.6, res:"2208×1840", ppi:378, w:139.7, h:158.7, weight:283, bt:5.2, bb:5.2, bl:8.0, br:8.0, bezel_src:"est" },
   { brand:"google", name:"Pixel 9 Pro Fold", year:2024, type:"h", screen:8.0, res:"2076×2152", ppi:373, w:150.2, h:155.2, weight:257, bt:4.3, bb:4.3, bl:4.4, br:4.4, bezel_src:"est" },
-  { brand:"vivo", name:"X Fold6", year:2026, type:"h", screen:8.02, res:null, ppi:null, w:null, h:null, weight:217, bt:null, bb:null, bl:null, br:null, bezel_src:"todo" },
+  { brand:"vivo", name:"X Fold6", year:2026, type:"h", screen:8.02, res:"2504x2312", ppi:425, w:145.66, h:157.16, weight:228, bt:3.8, bb:3.8, bl:3.7, br:3.7, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Z Fold8", year:2026, type:"h", screen:7.6, res:"2448x1848", ppi:404, w:123.9, h:161.4, weight:201, bt:3.7, bb:3.7, bl:3.9, br:3.9, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Z Fold8 Ultra", year:2026, type:"h", screen:8.0, res:"2504x2256", ppi:421, w:143.2, h:158.4, weight:215, bt:3.7, bb:3.7, bl:3.5, br:3.5, bezel_src:"est" },
+  { brand:"samsung", name:"Galaxy Z Flip8", year:2026, type:"v", screen:6.9, res:"2520x1080", ppi:397, w:75.4, h:166.9, weight:180, bt:2.8, bb:2.8, bl:3.2, br:3.2, bezel_src:"est" },
 ];
 
 // ==================== BRAND CONFIG ====================
@@ -1338,6 +1357,18 @@ function screenThumb(d, maxH, withCamera) {
   `</svg>`;
 }
 function devKey(d){ return d.brand + '|' + d.name; }
+// v2.4: 物理 mm → dp（按各机 PPI 还原像素再换算；ppi 缺失则无法换算）
+function mmToDp(mm, ppi) {
+  if (mm==null || isNaN(mm) || ppi==null || isNaN(ppi) || ppi<=0) return null;
+  const px = mm * ppi / 25.4;        // mm 还原为物理像素
+  const dp = px / (ppi / 160);        // 像素 → dp（160dpi 为基准）
+  return Math.round(dp);
+}
+// 生成 mm 值下方的 dp 小字（无 dp 则不显示）
+function dpSub(mm, ppi) {
+  const v = mmToDp(mm, ppi);
+  return v==null ? '' : `<span class="dp-sub">${v}dp</span>`;
+}
 
 function renderContent() {
   let data;
@@ -1407,12 +1438,12 @@ function renderContent() {
         <th class="sortable${sortKey==='screen'?' sort-active':''}" data-sortkey="screen">${currentCat==="foldable"?"\u5185\u5C4F\u5C3A\u5BF8":"\u5C4F\u5E55\u5C3A\u5BF8"}<span class="sort-arrow">${sortKey==='screen'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
         <th>\u5206\u8FA8\u7387</th>
         <th class="sortable${sortKey==='ppi'?' sort-active':''}" data-sortkey="ppi">PPI<span class="sort-arrow">${sortKey==='ppi'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
-        <th class="sortable${sortKey==='w'?' sort-active':''}" data-sortkey="w">${currentCat==="foldable"?"\u5C55\u5F00\u5BBD (mm)":"\u673A\u8EAB\u5BBD (mm)"}<span class="sort-arrow">${sortKey==='w'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
-        <th class="sortable${sortKey==='h'?' sort-active':''}" data-sortkey="h">${currentCat==="foldable"?"\u5C55\u5F00\u9AD8 (mm)":"\u673A\u8EAB\u9AD8 (mm)"}<span class="sort-arrow">${sortKey==='h'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
-        <th class="sortable bezel-col${sortKey==='bt'?' sort-active':''}" data-sortkey="bt">\u4E0A\u8FB9\u6846 (mm)<span class="sort-arrow">${sortKey==='bt'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span><br><span class="bezel-est-badge">\u4F30\u7B97</span></th>
-        <th class="sortable bezel-col${sortKey==='bb'?' sort-active':''}" data-sortkey="bb">\u4E0B\u8FB9\u6846 (mm)<span class="sort-arrow">${sortKey==='bb'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span><br><span class="bezel-est-badge">\u4F30\u7B97</span></th>
-        <th class="sortable bezel-col${sortKey==='bl'?' sort-active':''}" data-sortkey="bl">\u5DE6\u8FB9\u6846 (mm)<span class="sort-arrow">${sortKey==='bl'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span><br><span class="bezel-est-badge">\u4F30\u7B97</span></th>
-        <th class="sortable bezel-col${sortKey==='br'?' sort-active':''}" data-sortkey="br">\u53F3\u8FB9\u6846 (mm)<span class="sort-arrow">${sortKey==='br'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span><br><span class="bezel-est-badge">\u4F30\u7B97</span></th>
+        <th class="sortable${sortKey==='w'?' sort-active':''}" data-sortkey="w">${currentCat==="foldable"?"\u5C55\u5F00\u5BBD (mm)":"\u673A\u8EAB\u5BBD (mm)"}<span style="color:#aeaeb2;font-weight:400"> /dp</span><span class="sort-arrow">${sortKey==='w'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
+        <th class="sortable${sortKey==='h'?' sort-active':''}" data-sortkey="h">${currentCat==="foldable"?"\u5C55\u5F00\u9AD8 (mm)":"\u673A\u8EAB\u9AD8 (mm)"}<span style="color:#aeaeb2;font-weight:400"> /dp</span><span class="sort-arrow">${sortKey==='h'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
+        <th class="sortable bezel-col${sortKey==='bt'?' sort-active':''}" data-sortkey="bt">\u4E0A\u8FB9\u6846 (mm)<span style="color:#aeaeb2;font-weight:400"> /dp</span><span class="sort-arrow">${sortKey==='bt'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span><br><span class="bezel-est-badge">\u4F30\u7B97</span></th>
+        <th class="sortable bezel-col${sortKey==='bb'?' sort-active':''}" data-sortkey="bb">\u4E0B\u8FB9\u6846 (mm)<span style="color:#aeaeb2;font-weight:400"> /dp</span><span class="sort-arrow">${sortKey==='bb'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span><br><span class="bezel-est-badge">\u4F30\u7B97</span></th>
+        <th class="sortable bezel-col${sortKey==='bl'?' sort-active':''}" data-sortkey="bl">\u5DE6\u8FB9\u6846 (mm)<span style="color:#aeaeb2;font-weight:400"> /dp</span><span class="sort-arrow">${sortKey==='bl'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span><br><span class="bezel-est-badge">\u4F30\u7B97</span></th>
+        <th class="sortable bezel-col${sortKey==='br'?' sort-active':''}" data-sortkey="br">\u53F3\u8FB9\u6846 (mm)<span style="color:#aeaeb2;font-weight:400"> /dp</span><span class="sort-arrow">${sortKey==='br'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span><br><span class="bezel-est-badge">\u4F30\u7B97</span></th>
         <th class="sortable${sortKey==='weight'?' sort-active':''}" data-sortkey="weight">\u91CD\u91CF (g)<span class="sort-arrow">${sortKey==='weight'?(sortDir===1?'\u25B2':'\u25BC'):'\u2195'}</span></th>
       </tr>
     </thead><tbody>`;
@@ -1437,14 +1468,14 @@ function renderContent() {
       html += `<td class="num">${d.screen}"</td>`;
       html += `<td class="num">${d.res}</td>`;
       html += `<td class="num">${fmt(d.ppi)}${dotPpi}</td>`;
-      html += `<td class="num">${fmt(d.w)}${dotW}</td>`;
-      html += `<td class="num">${fmt(d.h)}${dotH}</td>`;
+      html += `<td class="num">${fmt(d.w)}${dotW}${dpSub(d.w, d.ppi)}</td>`;
+      html += `<td class="num">${fmt(d.h)}${dotH}${dpSub(d.h, d.ppi)}</td>`;
       // bezel source 标签（待补/缺失）保留在上边框格
       const btTag = (d.bezel_src && d.bezel_src !== "est") ? (' <span class="bezel-cell-tag src-'+d.bezel_src+'">'+SRC_MAP[d.bezel_src]+'</span>') : "";
-      html += `<td class="num">${fmt(d.bt)}${dotBezel}${btTag}</td>`;
-      html += `<td class="num">${fmt(d.bb)}</td>`;
-      html += `<td class="num">${fmt(d.bl)}</td>`;
-      html += `<td class="num">${fmt(d.br)}</td>`;
+      html += `<td class="num">${fmt(d.bt)}${dotBezel}${btTag}${dpSub(d.bt, d.ppi)}</td>`;
+      html += `<td class="num">${fmt(d.bb)}${dpSub(d.bb, d.ppi)}</td>`;
+      html += `<td class="num">${fmt(d.bl)}${dpSub(d.bl, d.ppi)}</td>`;
+      html += `<td class="num">${fmt(d.br)}${dpSub(d.br, d.ppi)}</td>`;
       html += `<td class="num ${weightClass(d.weight, currentCat)}">${fmt(d.weight)}</td>`;
       html += `</tr>`;
     });
@@ -1487,6 +1518,9 @@ function renderContent() {
   note += '<br>• 红点直接落在对应数值旁，鼠标悬停可查看是偏高还是偏低。宽高比差异会同时标在机身宽、机身高两格';
   note += '<br>• 因采用跨品类混合口径，平板/折叠屏因形态差异较易出现红点，属正常现象';
 
+  note += '<br><br><strong>dp 值说明：</strong>';
+  note += '<br>• 各物理尺寸（机身宽/高、四边框）下方灰色小字为对应 <strong>dp（密度无关像素）</strong>，按该机 PPI 将 mm 还原为像素后换算（160dpi 为 1 倍基准），公式 dp = mm × 160 ÷ 25.4';
+  note += '<br>• 无 PPI 数据（待补机型）无法还原像素，dp 留空';
   html += `<div class="footnote">${note}</div>`;
   container.innerHTML = html;
   // v2.1: 绑定选中复选框
@@ -1618,12 +1652,12 @@ function openCompare() {
     { label:(foldableInvolved?'屏幕尺寸(内屏)':'屏幕尺寸'), get:d => d.screen + '"' },
     { label:'分辨率', get:d => d.res },
     { label:'PPI', get:d => fmt(d.ppi), num:true, key:'ppi' },
-    { label:(foldableInvolved?'展开宽 (mm)':'机身宽 (mm)'), get:d => fmt(d.w) },
-    { label:(foldableInvolved?'展开高 (mm)':'机身高 (mm)'), get:d => fmt(d.h) },
-    { label:'上边框 (mm)', get:d => fmt(d.bt) },
-    { label:'下边框 (mm)', get:d => fmt(d.bb) },
-    { label:'左边框 (mm)', get:d => fmt(d.bl) },
-    { label:'右边框 (mm)', get:d => fmt(d.br) },
+    { label:(foldableInvolved?'展开宽 (mm)':'机身宽 (mm)'), get:d => { const v=fmt(d.w); const dp=mmToDp(d.w,d.ppi); return dp==null?v:(v+' <span style="color:#aeaeb2;font-size:11px">'+dp+'dp</span>'); } },
+    { label:(foldableInvolved?'展开高 (mm)':'机身高 (mm)'), get:d => { const v=fmt(d.h); const dp=mmToDp(d.h,d.ppi); return dp==null?v:(v+' <span style="color:#aeaeb2;font-size:11px">'+dp+'dp</span>'); } },
+    { label:'上边框 (mm)', get:d => { const v=fmt(d.bt); const dp=mmToDp(d.bt,d.ppi); return dp==null?v:(v+' <span style="color:#aeaeb2;font-size:11px">'+dp+'dp</span>'); } },
+    { label:'下边框 (mm)', get:d => { const v=fmt(d.bb); const dp=mmToDp(d.bb,d.ppi); return dp==null?v:(v+' <span style="color:#aeaeb2;font-size:11px">'+dp+'dp</span>'); } },
+    { label:'左边框 (mm)', get:d => { const v=fmt(d.bl); const dp=mmToDp(d.bl,d.ppi); return dp==null?v:(v+' <span style="color:#aeaeb2;font-size:11px">'+dp+'dp</span>'); } },
+    { label:'右边框 (mm)', get:d => { const v=fmt(d.br); const dp=mmToDp(d.br,d.ppi); return dp==null?v:(v+' <span style="color:#aeaeb2;font-size:11px">'+dp+'dp</span>'); } },
     { label:'重量 (g)', get:d => fmt(d.weight), num:true, key:'weight', lowerBetter:true },
   ];
   let table = '<div class="cmp-table-wrap"><table class="cmp-table"><thead><tr><th>参数</th>';
